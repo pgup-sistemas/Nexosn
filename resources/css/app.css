@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --color-primary:   #003049;
+    --color-action:    #D62828;
+    --color-highlight: #F77F00;
+    --color-accent:    #FCBF49;
+    --color-surface:   #EAE2B7;
+    --color-bg:        #FFFFFF;
+    --color-text:      #1A1F2E;
+
+    --card-primary: var(--color-primary);
+    --card-button:  var(--color-action);
+}
+
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
