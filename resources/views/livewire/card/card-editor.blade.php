@@ -1,0 +1,179 @@
+<div class="space-y-6">
+
+    @if (session('sucesso'))
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg px-4 py-3">
+            <i data-lucide="check-circle" class="w-4 h-4 shrink-0"></i>
+            {{ session('sucesso') }}
+        </div>
+    @endif
+
+    {{-- Status do cartão --}}
+    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div>
+            <p class="text-sm font-medium text-gray-700">Status do cartão</p>
+            <p class="text-xs text-gray-500 mt-0.5">
+                {{ $card->is_active ? 'Visível publicamente em' : 'Cartão desativado' }}
+                @if ($card->is_active)
+                    <a href="{{ route('card.show', $card->slug) }}" target="_blank"
+                       class="underline text-blue-600">/u/{{ $card->slug }}</a>
+                @endif
+            </p>
+        </div>
+        <button wire:click="toggleActive"
+                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                style="background-color: {{ $card->is_active ? 'var(--color-primary)' : '#D1D5DB' }};">
+            <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow"
+                  style="transform: translateX({{ $card->is_active ? '20px' : '4px' }})"></span>
+        </button>
+    </div>
+
+    {{-- Identificação --}}
+    <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i data-lucide="user" class="w-4 h-4" style="color: var(--color-primary);"></i>
+            Identificação
+        </h3>
+
+        <div class="grid grid-cols-1 gap-4">
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Nome de exibição *</label>
+                <input wire:model="display_name" type="text" maxlength="80"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                @error('display_name')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-gray-600">Cargo / Título</label>
+                    <input wire:model="title" type="text" maxlength="80"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    @error('title')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-gray-600">Empresa</label>
+                    <input wire:model="company" type="text" maxlength="80"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    @error('company')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Sobre (bio)</label>
+                <textarea wire:model="bio" rows="3" maxlength="500"
+                          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
+                          placeholder="Apresente-se brevemente..."></textarea>
+                @error('bio')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+        </div>
+    </div>
+
+    {{-- Contato --}}
+    <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i data-lucide="phone" class="w-4 h-4" style="color: var(--color-primary);"></i>
+            Contato
+        </h3>
+
+        <div class="grid grid-cols-1 gap-3">
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Telefone / WhatsApp</label>
+                <input wire:model="contact_phone" type="text" maxlength="20"
+                       placeholder="(69) 99999-9999"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('contact_phone')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">E-mail de contato</label>
+                <input wire:model="contact_email" type="email" maxlength="255"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('contact_email')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Website</label>
+                <input wire:model="website" type="url" maxlength="255"
+                       placeholder="https://seusite.com.br"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('website')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Endereço</label>
+                <input wire:model="address" type="text" maxlength="255"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('address')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Chave PIX</label>
+                <input wire:model="pix_key" type="text" maxlength="100"
+                       placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('pix_key')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+        </div>
+    </div>
+
+    {{-- Cores de marca (Pro) --}}
+    <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i data-lucide="palette" class="w-4 h-4" style="color: var(--color-primary);"></i>
+            Cores de marca
+            @if (!$isPro)
+                <span class="ml-auto text-xs font-medium px-2 py-0.5 rounded-full text-white" style="background-color: var(--color-highlight);">Pro</span>
+            @endif
+        </h3>
+
+        @if ($isPro)
+            <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label class="text-xs font-medium text-gray-600">Cor primária (header)</label>
+                    <div class="flex items-center gap-2">
+                        <input wire:model.live="brand_color_primary" type="color"
+                               class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 p-0.5"
+                               value="{{ $brand_color_primary }}">
+                        <input wire:model.live="brand_color_primary" type="text" maxlength="7"
+                               class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:border-blue-500">
+                    </div>
+                    @error('brand_color_primary')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-2">
+                    <label class="text-xs font-medium text-gray-600">Cor dos botões</label>
+                    <div class="flex items-center gap-2">
+                        <input wire:model.live="brand_color_button" type="color"
+                               class="w-10 h-10 rounded-lg cursor-pointer border border-gray-300 p-0.5"
+                               value="{{ $brand_color_button }}">
+                        <input wire:model.live="brand_color_button" type="text" maxlength="7"
+                               class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:border-blue-500">
+                    </div>
+                    @error('brand_color_button')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+            </div>
+        @else
+            <div class="flex items-center gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <i data-lucide="lock" class="w-5 h-5 text-amber-600 shrink-0"></i>
+                <div>
+                    <p class="text-sm font-medium text-amber-800">Recurso Pro</p>
+                    <p class="text-xs text-amber-700 mt-0.5">Personalize as cores do seu cartão no plano Pro.</p>
+                </div>
+                <a href="{{ route('dashboard.plan') }}"
+                   class="ml-auto shrink-0 text-xs font-medium px-3 py-1.5 rounded-lg text-white transition hover:opacity-90"
+                   style="background-color: var(--color-highlight);">
+                    Upgrade
+                </a>
+            </div>
+        @endif
+    </div>
+
+    {{-- Salvar --}}
+    <div class="pt-2">
+        <button wire:click="save"
+                wire:loading.attr="disabled"
+                class="w-full text-white text-sm font-medium rounded-xl py-3 transition hover:opacity-90 disabled:opacity-60 flex items-center justify-center gap-2"
+                style="background-color: var(--color-primary);">
+            <span wire:loading.remove>Salvar alterações</span>
+            <span wire:loading class="flex items-center gap-2">
+                <i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>
+                Salvando...
+            </span>
+        </button>
+    </div>
+
+</div>
