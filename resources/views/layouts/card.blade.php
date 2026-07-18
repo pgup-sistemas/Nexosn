@@ -26,11 +26,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- Lucide Icons --}}
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.lucide) lucide.createIcons();
-        });
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
     </script>
 </head>
 <body class="min-h-screen" style="background-color: #f3f4f6; font-family: 'Inter', sans-serif;">

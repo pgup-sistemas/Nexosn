@@ -7,8 +7,12 @@
     <title>{{ $title ?? 'Painel' }} | Card</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
-    <script>document.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons(); });</script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
+        document.addEventListener('livewire:navigated', () => lucide.createIcons());
+        document.addEventListener('livewire:update', () => lucide.createIcons());
+    </script>
 </head>
 <body class="min-h-screen antialiased" style="background-color: #f9fafb; font-family: 'Inter', sans-serif;" x-data="{ sidebarOpen: false }">
 
