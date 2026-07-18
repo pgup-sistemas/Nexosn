@@ -199,6 +199,9 @@ function copiarPix() {
     </a>
 </div>
 
+{{-- ═══════════════════ FORMULÁRIO DE CONTATO ═══════════════════ --}}
+<livewire:card.contact-form :card="$card" />
+
 {{-- ═══════════════════ MARCA D'ÁGUA ═══════════════════ --}}
 @if ($card->show_watermark)
 <div class="py-4 text-center border-t border-gray-100">

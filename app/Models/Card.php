@@ -42,6 +42,11 @@ class Card extends Model
         return $this->hasMany(CardView::class);
     }
 
+    public function messages(): HasMany
+    {
+        return $this->hasMany(ContactMessage::class)->orderByDesc('created_at');
+    }
+
     public function getPrimaryColorAttribute(): string
     {
         $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
