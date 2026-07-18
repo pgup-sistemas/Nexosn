@@ -8,12 +8,18 @@
     <title>@yield('title', 'Cartão Digital') | Card</title>
     <meta name="description" content="@yield('description', 'Cartão de visita digital.')">
 
-    {{-- Open Graph --}}
+    {{-- Open Graph / WhatsApp --}}
     <meta property="og:title" content="@yield('title', 'Cartão Digital')">
     <meta property="og:description" content="@yield('description', 'Cartão de visita digital.')">
     <meta property="og:image" content="@yield('og_image', asset('images/og-default.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:type" content="profile">
     <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', 'Cartão Digital')">
+    <meta name="twitter:description" content="@yield('description', 'Cartão de visita digital.')">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/og-default.png'))">
 
     @yield('card_colors')
 

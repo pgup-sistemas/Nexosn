@@ -37,5 +37,6 @@ Route::post('logout', function () {
 
 // Cartão público
 Route::get('/u/{slug}', [CardController::class, 'show'])->name('card.show');
+Route::get('/u/{slug}/contato.vcf', [CardController::class, 'vcard'])->name('card.vcard');
 
 require __DIR__.'/auth.php';

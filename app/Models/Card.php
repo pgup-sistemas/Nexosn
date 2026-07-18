@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Card extends Model
 {
@@ -24,5 +25,38 @@ class Card extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function links(): HasMany
+    {
+        return $this->hasMany(CardLink::class)->orderBy('order');
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(CardPhoto::class)->orderBy('order');
+    }
+
+    public function views(): HasMany
+    {
+        return $this->hasMany(CardView::class);
+    }
+
+    public function getPrimaryColorAttribute(): string
+    {
+        $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
+        if ($user && ($user->isPro() || $user->isOnTrial()) && $this->brand_color_primary) {
+            return $this->brand_color_primary;
+        }
+        return '#003049';
+    }
+
+    public function getButtonColorAttribute(): string
+    {
+        $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();
+        if ($user && ($user->isPro() || $user->isOnTrial()) && $this->brand_color_button) {
+            return $this->brand_color_button;
+        }
+        return '#D62828';
     }
 }
