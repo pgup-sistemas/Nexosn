@@ -12,7 +12,7 @@ class CardController extends Controller
 {
     public function show(string $slug)
     {
-        $card = Card::with(['user', 'links' => fn ($q) => $q->where('is_active', true), 'photos'])
+        $card = Card::with(['user', 'links' => fn ($q) => $q->where('is_active', true), 'photos', 'schedule.slots'])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->firstOrFail();

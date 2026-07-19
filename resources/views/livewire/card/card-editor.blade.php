@@ -27,6 +27,77 @@
         </button>
     </div>
 
+    {{-- Fotos: Avatar e Capa --}}
+    <div class="space-y-4">
+        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i data-lucide="image" class="w-4 h-4" style="color: var(--color-primary);"></i>
+            Fotos do cartão
+        </h3>
+
+        <div class="grid grid-cols-2 gap-4">
+
+            {{-- Avatar --}}
+            <div class="space-y-2">
+                <p class="text-xs font-medium text-gray-600">Foto de perfil</p>
+                <div class="relative">
+                    @if ($card->profile_photo)
+                        <img src="{{ Storage::url($card->profile_photo) }}"
+                             alt="Foto de perfil"
+                             class="w-full aspect-square object-cover rounded-xl border border-gray-200">
+                        <button wire:click="removeProfilePhoto"
+                                wire:confirm="Remover foto de perfil?"
+                                class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center hover:bg-red-50 transition">
+                            <i data-lucide="x" class="w-3 h-3 text-red-500"></i>
+                        </button>
+                    @else
+                        <div class="w-full aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-1">
+                            <i data-lucide="user-circle" class="w-8 h-8 text-gray-300"></i>
+                            <span class="text-[11px] text-gray-400">Sem foto</span>
+                        </div>
+                    @endif
+                </div>
+                <label class="block">
+                    <span class="sr-only">Escolher foto de perfil</span>
+                    <input wire:model="profile_photo_upload" type="file" accept="image/*"
+                           class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
+                </label>
+                @error('profile_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
+                <div wire:loading wire:target="profile_photo_upload" class="text-[11px] text-gray-400">Carregando...</div>
+            </div>
+
+            {{-- Capa --}}
+            <div class="space-y-2">
+                <p class="text-xs font-medium text-gray-600">Foto de capa</p>
+                <div class="relative">
+                    @if ($card->cover_photo)
+                        <img src="{{ Storage::url($card->cover_photo) }}"
+                             alt="Foto de capa"
+                             class="w-full aspect-square object-cover rounded-xl border border-gray-200">
+                        <button wire:click="removeCoverPhoto"
+                                wire:confirm="Remover foto de capa?"
+                                class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center hover:bg-red-50 transition">
+                            <i data-lucide="x" class="w-3 h-3 text-red-500"></i>
+                        </button>
+                    @else
+                        <div class="w-full aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-1">
+                            <i data-lucide="image" class="w-8 h-8 text-gray-300"></i>
+                            <span class="text-[11px] text-gray-400">Sem capa</span>
+                        </div>
+                    @endif
+                </div>
+                <label class="block">
+                    <span class="sr-only">Escolher foto de capa</span>
+                    <input wire:model="cover_photo_upload" type="file" accept="image/*"
+                           class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
+                </label>
+                @error('cover_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
+                <div wire:loading wire:target="cover_photo_upload" class="text-[11px] text-gray-400">Carregando...</div>
+            </div>
+
+        </div>
+        <p class="text-[11px] text-gray-400">As fotos são salvas automaticamente ao clicar em "Salvar alterações".</p>
+    </div>
+
     {{-- Identificação --}}
     <div class="space-y-4">
         <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">

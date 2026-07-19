@@ -199,6 +199,11 @@ function copiarPix() {
     </a>
 </div>
 
+{{-- ═══════════════════ AGENDA (Pro) ═══════════════════ --}}
+@if ($card->schedule && $card->schedule->is_active)
+<livewire:schedule.appointment-calendar :card="$card" />
+@endif
+
 {{-- ═══════════════════ FORMULÁRIO DE CONTATO ═══════════════════ --}}
 <livewire:card.contact-form :card="$card" />
 

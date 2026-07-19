@@ -3,12 +3,22 @@
 namespace App\Livewire\Card;
 
 use App\Models\Card;
+use App\Services\ImageService;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CardEditor extends Component
 {
+    use WithFileUploads;
+
     public ?Card $card = null;
+
+    #[Validate('nullable|image|max:2048')]
+    public $profile_photo_upload = null;
+
+    #[Validate('nullable|image|max:4096')]
+    public $cover_photo_upload = null;
 
     #[Validate('required|string|max:80')]
     public string $display_name = '';
@@ -62,10 +72,47 @@ class CardEditor extends Component
         }
     }
 
+    public function removeProfilePhoto(): void
+    {
+        $card = $this->card;
+        if ($card->profile_photo) {
+            app(ImageService::class)->delete($card->profile_photo);
+            $card->update(['profile_photo' => null]);
+        }
+    }
+
+    public function removeCoverPhoto(): void
+    {
+        $card = $this->card;
+        if ($card->cover_photo) {
+            app(ImageService::class)->delete($card->cover_photo);
+            $card->update(['cover_photo' => null]);
+        }
+    }
+
     public function save(): void
     {
         $validated = $this->validate();
         $user = auth()->user();
+        $imageService = app(ImageService::class);
+
+        if ($this->profile_photo_upload) {
+            if ($this->card->profile_photo) {
+                $imageService->delete($this->card->profile_photo);
+            }
+            $path = $imageService->storeProfile($this->profile_photo_upload, $user->id);
+            $this->card->update(['profile_photo' => $path]);
+            $this->reset('profile_photo_upload');
+        }
+
+        if ($this->cover_photo_upload) {
+            if ($this->card->cover_photo) {
+                $imageService->delete($this->card->cover_photo);
+            }
+            $path = $imageService->storeCover($this->cover_photo_upload, $user->id);
+            $this->card->update(['cover_photo' => $path]);
+            $this->reset('cover_photo_upload');
+        }
 
         // Valida HEX no backend (rule já garante, mas registramos o cuidado)
         if (!preg_match('/^#[0-9A-Fa-f]{6}$/', $this->brand_color_primary)) {
