@@ -11,6 +11,7 @@
     {{-- Canonical --}}
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
     <link rel="apple-touch-icon" href="/images/icon-192.png">
 
     {{-- Open Graph (WhatsApp, Facebook, LinkedIn) --}}

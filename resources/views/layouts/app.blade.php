@@ -9,6 +9,8 @@
     <meta name="description" content="Painel NEXOSN — gerencie sua identidade digital, links, agenda e muito mais.">
     <meta name="application-name" content="NEXOSN">
     <meta name="theme-color" content="#003049">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>

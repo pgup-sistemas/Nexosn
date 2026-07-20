@@ -8,6 +8,8 @@
     <title>@yield('title', 'Acesso') · NEXOSN</title>
     <meta name="description" content="Acesse ou crie sua conta na NEXOSN — identidade digital única, segura e inteligente.">
     <meta name="theme-color" content="#003049">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+    <link rel="apple-touch-icon" href="/images/icon-192.png">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles

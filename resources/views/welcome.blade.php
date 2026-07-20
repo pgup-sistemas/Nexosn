@@ -9,6 +9,8 @@
 <link rel="canonical" href="{{ url('/') }}">
 <meta name="theme-color" content="#003049">
 <meta name="application-name" content="NEXOSN">
+<link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
+<link rel="apple-touch-icon" href="/images/icon-192.png">
 
 <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
 <meta property="og:site_name" content="NEXOSN">
