@@ -1,8 +1,8 @@
 <x-app-layout>
     <div class="max-w-2xl">
         <div class="mb-5">
-            <h1 class="text-xl font-semibold text-gray-900">Compartilhar Cartão</h1>
-            <p class="text-sm text-gray-500 mt-1">Compartilhe seu cartão digital via link ou QR Code.</p>
+            <h1 class="text-xl font-semibold text-gray-900">Compartilhar Perfil</h1>
+            <p class="text-sm text-gray-500 mt-1">Compartilhe sua identidade digital via link ou QR Code.</p>
         </div>
 
         <div class="space-y-4">
@@ -27,14 +27,14 @@
 
                 {{-- Botões de compartilhamento --}}
                 <div class="flex gap-2 mt-3 flex-wrap">
-                    <a href="https://wa.me/?text={{ urlencode('Acesse meu cartão digital: ' . $cardUrl) }}"
+                    <a href="https://wa.me/?text={{ urlencode('Acesse meu perfil digital: ' . $cardUrl) }}"
                        target="_blank"
                        class="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg text-white transition hover:opacity-90"
                        style="background-color: #25D366;">
                         <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
                         WhatsApp
                     </a>
-                    <a href="mailto:?subject=Meu+Cart%C3%A3o+Digital&body={{ urlencode('Acesse meu cartão digital: ' . $cardUrl) }}"
+                    <a href="mailto:?subject=Meu+Perfil+Digital&body={{ urlencode('Acesse meu perfil digital: ' . $cardUrl) }}"
                        class="flex items-center gap-1.5 text-xs font-medium px-3 py-2 rounded-lg border border-gray-300 text-gray-600 transition hover:bg-gray-50">
                         <i data-lucide="mail" class="w-3.5 h-3.5"></i>
                         E-mail

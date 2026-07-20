@@ -7,24 +7,39 @@
         </div>
     @endif
 
-    {{-- Status do cartão --}}
-    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-200">
-        <div>
-            <p class="text-sm font-medium text-gray-700">Status do cartão</p>
-            <p class="text-xs text-gray-500 mt-0.5">
-                {{ $card->is_active ? 'Visível publicamente em' : 'Cartão desativado' }}
-                @if ($card->is_active)
-                    <a href="{{ route('card.show', $card->slug) }}" target="_blank"
-                       class="underline text-blue-600">/u/{{ $card->slug }}</a>
-                @endif
-            </p>
+    {{-- Status + Slug --}}
+    <div class="space-y-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-700">Status do perfil</p>
+                <p class="text-xs text-gray-500 mt-0.5">
+                    {{ $card->is_active ? 'Visível publicamente' : 'Perfil desativado' }}
+                </p>
+            </div>
+            <button wire:click="toggleActive"
+                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    style="background-color: {{ $card->is_active ? 'var(--color-primary)' : '#D1D5DB' }};">
+                <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow"
+                      style="transform: translateX({{ $card->is_active ? '20px' : '4px' }})"></span>
+            </button>
         </div>
-        <button wire:click="toggleActive"
-                class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
-                style="background-color: {{ $card->is_active ? 'var(--color-primary)' : '#D1D5DB' }};">
-            <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow"
-                  style="transform: translateX({{ $card->is_active ? '20px' : '4px' }})"></span>
-        </button>
+
+        {{-- Editar slug --}}
+        <div>
+            <label class="text-xs font-medium text-gray-600">Link do perfil</label>
+            <div class="flex items-center mt-1 rounded-lg border border-gray-300 bg-white overflow-hidden">
+                <span class="px-3 py-2 text-xs text-gray-400 bg-gray-50 border-r border-gray-300 shrink-0 whitespace-nowrap">/u/</span>
+                <input wire:model="slug" type="text"
+                       class="flex-1 px-3 py-2 text-sm focus:outline-none bg-white"
+                       placeholder="seu-nome">
+                <a href="{{ route('card.show', $card->slug) }}" target="_blank"
+                   class="px-2 py-2 text-gray-400 hover:text-gray-600 shrink-0">
+                    <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+            </div>
+            @error('slug')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+            <p class="text-xs text-gray-400 mt-1">Apenas letras minúsculas, números e hífens. Mín. 3 caracteres.</p>
+        </div>
     </div>
 
     {{-- Fotos: Avatar e Capa --}}

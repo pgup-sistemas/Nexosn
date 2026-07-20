@@ -20,6 +20,9 @@ class CardEditor extends Component
     #[Validate('nullable|image|max:4096')]
     public $cover_photo_upload = null;
 
+    #[Validate('required|string|min:3|max:50|alpha_dash|lowercase')]
+    public string $slug = '';
+
     #[Validate('required|string|max:80')]
     public string $display_name = '';
 
@@ -58,6 +61,7 @@ class CardEditor extends Component
         $this->card = auth()->user()->card;
 
         if ($this->card) {
+            $this->slug                = $this->card->slug ?? '';
             $this->display_name        = $this->card->display_name ?? '';
             $this->title               = $this->card->title ?? '';
             $this->company             = $this->card->company ?? '';
@@ -92,7 +96,24 @@ class CardEditor extends Component
 
     public function save(): void
     {
-        $validated = $this->validate();
+        $this->validateOnly('slug', [
+            'slug' => ['required', 'string', 'min:3', 'max:50', 'alpha_dash', 'lowercase',
+                       \Illuminate\Validation\Rule::unique('cards', 'slug')->ignore($this->card->id)],
+        ]);
+
+        $validated = $this->validate(array_filter([
+            'display_name'       => 'required|string|max:80',
+            'title'              => 'nullable|string|max:80',
+            'company'            => 'nullable|string|max:80',
+            'bio'                => 'nullable|string|max:500',
+            'contact_email'      => 'nullable|email|max:255',
+            'contact_phone'      => 'nullable|string|max:20',
+            'address'            => 'nullable|string|max:255',
+            'website'            => 'nullable|url|max:255',
+            'pix_key'            => 'nullable|string|max:100',
+            'brand_color_primary'=> 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+            'brand_color_button' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
+        ]));
         $user = auth()->user();
         $imageService = app(ImageService::class);
 
@@ -131,7 +152,12 @@ class CardEditor extends Component
 
         $this->card->update($data);
 
-        session()->flash('sucesso', 'Cartão atualizado com sucesso!');
+        // Slug: salva separado para garantir unicidade com Rule::unique
+        if ($this->slug !== $this->card->slug) {
+            $this->card->update(['slug' => $this->slug]);
+        }
+
+        session()->flash('sucesso', 'Perfil atualizado com sucesso!');
         $this->dispatch('card-updated');
     }
 
