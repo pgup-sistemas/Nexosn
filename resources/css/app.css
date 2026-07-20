@@ -48,8 +48,9 @@
     --color-bg:        #FFFFFF;
     --color-text:      #1A1F2E;
 
-    --card-primary: var(--color-primary);
-    --card-button:  var(--color-action);
+    /* --card-primary e --card-button são injetados dinamicamente pelo
+       layout card.blade.php via @yield('card_colors') com os valores
+       do titular. Não defina aqui para não sobrescrever as cores customizadas. */
 }
 
 body {
