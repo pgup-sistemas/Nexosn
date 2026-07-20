@@ -78,6 +78,106 @@
         </div>
     </div>
 
+    {{-- Gráfico 30 dias --}}
+    @if (!empty($viewsChart))
+    <div class="bg-white rounded-xl border border-gray-200 p-5">
+        <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+            Visitas — últimos 30 dias
+        </p>
+        @php $maxViews = max(array_column($viewsChart, 'total'), 1); @endphp
+        <div style="display:flex;align-items:flex-end;gap:3px;height:60px;">
+            @foreach ($viewsChart as $day)
+            @php $h = max(4, round($day['total'] / $maxViews * 60)); @endphp
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;" title="{{ $day['date'] }}: {{ $day['total'] }} visitas">
+                <div style="width:100%;height:{{ $h }}px;border-radius:3px 3px 0 0;
+                            background-color: {{ $day['total'] > 0 ? 'var(--color-primary)' : '#E5E7EB' }};
+                            opacity:{{ $day['total'] > 0 ? '1' : '0.4' }};
+                            transition:opacity .15s;" onmouseenter="this.style.opacity='.7'" onmouseleave="this.style.opacity='{{ $day['total'] > 0 ? '1' : '0.4' }}'">
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+            <span class="text-[10px] text-gray-400">{{ $viewsChart[0]['date'] }}</span>
+            <span class="text-[10px] text-gray-400">{{ $viewsChart[count($viewsChart)-1]['date'] }}</span>
+        </div>
+    </div>
+    @endif
+
+    {{-- Origem do tráfego + Top links --}}
+    @if (!empty($sources) || !empty($topLinks))
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+        {{-- Origem --}}
+        @if (!empty($sources))
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i data-lucide="globe" class="w-3.5 h-3.5"></i>
+                Origem do tráfego (30 dias)
+            </p>
+            <div class="space-y-3">
+                @foreach ($sources as $src)
+                @php
+                    $color = match($src['source']) {
+                        'whatsapp'  => '#25D366',
+                        'instagram' => '#E1306C',
+                        'google'    => '#4285F4',
+                        'facebook'  => '#1877F2',
+                        'linkedin'  => '#0A66C2',
+                        'tiktok'    => '#010101',
+                        'twitter'   => '#1DA1F2',
+                        'telegram'  => '#2AABEE',
+                        'direct'    => '#003049',
+                        default     => '#9CA3AF',
+                    };
+                @endphp
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-gray-700">{{ $src['label'] }}</span>
+                        <span class="text-xs font-semibold text-gray-600">{{ $src['total'] }} <span class="text-gray-400 font-normal">({{ $src['pct'] }}%)</span></span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div style="width:{{ $src['pct'] }}%;height:100%;background:{{ $color }};border-radius:9999px;"></div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        {{-- Top links --}}
+        @if (!empty($topLinks) && $topLinks->sum('click_count') > 0)
+        <div class="bg-white rounded-xl border border-gray-200 p-5">
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-2">
+                <i data-lucide="mouse-pointer-click" class="w-3.5 h-3.5"></i>
+                Clicks por link
+            </p>
+            @php $maxClicks = max($topLinks->pluck('click_count')->max(), 1); @endphp
+            <div class="space-y-3">
+                @foreach ($topLinks as $link)
+                @if ($link->click_count > 0)
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-xs text-gray-700 truncate max-w-[70%]">{{ $link->label }}</span>
+                        <span class="text-xs font-semibold text-gray-600 shrink-0">{{ $link->click_count }}</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                        <div style="width:{{ round($link->click_count / $maxClicks * 100) }}%;height:100%;background:var(--color-action);border-radius:9999px;"></div>
+                    </div>
+                </div>
+                @endif
+                @endforeach
+                @if ($topLinks->sum('click_count') === 0)
+                <p class="text-xs text-gray-400">Nenhum clique registrado ainda.</p>
+                @endif
+            </div>
+        </div>
+        @endif
+
+    </div>
+    @endif
+
     {{-- Acesso rápido --}}
     <div class="grid grid-cols-2 gap-3">
         <a href="{{ route('dashboard.card') }}"

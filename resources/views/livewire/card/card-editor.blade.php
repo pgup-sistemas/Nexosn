@@ -57,12 +57,12 @@
 
             {{-- Avatar --}}
             <div class="space-y-2">
-                <p class="text-xs font-medium text-gray-600">Foto de perfil</p>
+                <p class="text-xs font-medium text-gray-600">Foto de perfil <span class="text-gray-400 font-normal">(quadrado, recortado do topo)</span></p>
                 <div class="relative">
                     @if ($card->profile_photo)
                         <img src="{{ Storage::url($card->profile_photo) }}"
                              alt="Foto de perfil"
-                             class="w-full aspect-square object-cover rounded-xl border border-gray-200">
+                             class="w-full aspect-square object-cover object-top rounded-xl border border-gray-200">
                         <button wire:click="removeProfilePhoto"
                                 wire:confirm="Remover foto de perfil?"
                                 class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center hover:bg-red-50 transition">
@@ -81,24 +81,25 @@
                            class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
                 </label>
                 @error('profile_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
-                <div wire:loading wire:target="profile_photo_upload" class="text-[11px] text-gray-400">Carregando...</div>
+                <div wire:loading wire:target="profile_photo_upload" class="text-[11px] text-gray-400">Processando...</div>
             </div>
 
             {{-- Capa --}}
             <div class="space-y-2">
-                <p class="text-xs font-medium text-gray-600">Foto de capa</p>
+                <p class="text-xs font-medium text-gray-600">Foto de capa <span class="text-gray-400 font-normal">(panorâmica 3:1, recortada do centro)</span></p>
                 <div class="relative">
                     @if ($card->cover_photo)
                         <img src="{{ Storage::url($card->cover_photo) }}"
                              alt="Foto de capa"
-                             class="w-full aspect-square object-cover rounded-xl border border-gray-200">
+                             style="aspect-ratio:3/1"
+                             class="w-full object-cover object-center rounded-xl border border-gray-200">
                         <button wire:click="removeCoverPhoto"
                                 wire:confirm="Remover foto de capa?"
                                 class="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-white shadow flex items-center justify-center hover:bg-red-50 transition">
                             <i data-lucide="x" class="w-3 h-3 text-red-500"></i>
                         </button>
                     @else
-                        <div class="w-full aspect-square rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-1">
+                        <div style="aspect-ratio:3/1" class="w-full rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-1">
                             <i data-lucide="image" class="w-8 h-8 text-gray-300"></i>
                             <span class="text-[11px] text-gray-400">Sem capa</span>
                         </div>
@@ -110,7 +111,7 @@
                            class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
                 </label>
                 @error('cover_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
-                <div wire:loading wire:target="cover_photo_upload" class="text-[11px] text-gray-400">Carregando...</div>
+                <div wire:loading wire:target="cover_photo_upload" class="text-[11px] text-gray-400">Processando...</div>
             </div>
 
         </div>

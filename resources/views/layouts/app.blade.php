@@ -49,12 +49,17 @@
                 </a>
             </div>
 
+            @php
+                $unreadMessages = auth()->user()->card
+                    ? auth()->user()->card->messages()->whereNull('read_at')->count()
+                    : 0;
+            @endphp
             <nav class="flex-1 mt-2 px-3 space-y-0.5 overflow-y-auto">
                 <x-sidebar-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" icon="layout-dashboard" label="Visão Geral" />
                 <x-sidebar-link href="{{ route('dashboard.card') }}" :active="request()->routeIs('dashboard.card')" icon="credit-card" label="Meu Cartão" />
                 <x-sidebar-link href="{{ route('dashboard.links') }}" :active="request()->routeIs('dashboard.links')" icon="link" label="Links" />
                 <x-sidebar-link href="{{ route('dashboard.photos') }}" :active="request()->routeIs('dashboard.photos')" icon="image" label="Galeria" />
-                <x-sidebar-link href="{{ route('dashboard.messages') }}" :active="request()->routeIs('dashboard.messages')" icon="mail" label="Mensagens" />
+                <x-sidebar-link href="{{ route('dashboard.messages') }}" :active="request()->routeIs('dashboard.messages')" icon="mail" label="Mensagens" :badge="$unreadMessages ?: null" />
                 <x-sidebar-link href="{{ route('dashboard.schedule') }}" :active="request()->routeIs('dashboard.schedule')" icon="calendar" label="Agenda" />
                 <x-sidebar-link href="{{ route('dashboard.appointments') }}" :active="request()->routeIs('dashboard.appointments')" icon="clock" label="Agendamentos" />
                 <x-sidebar-link href="{{ route('dashboard.share') }}" :active="request()->routeIs('dashboard.share')" icon="share-2" label="Compartilhar" />

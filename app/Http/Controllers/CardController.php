@@ -17,17 +17,43 @@ class CardController extends Controller
             ->where('is_active', true)
             ->firstOrFail();
 
-        // Registra visualização de forma assíncrona (sem bloquear a resposta)
+        $referer = request()->header('referer', '');
         $card->views()->create([
             'ip'         => request()->ip(),
             'user_agent' => request()->userAgent(),
-            'referer'    => request()->header('referer'),
+            'referer'    => $referer,
+            'source'     => self::detectSource($referer),
         ]);
 
         // QR Code inline: evita requisição extra — funciona offline após 1ª carga
         $qrSvg = $qrService->generateSvg($card);
 
         return view('card.show', compact('card', 'qrSvg'));
+    }
+
+    public function trackClick(string $slug, int $linkId): \Illuminate\Http\RedirectResponse
+    {
+        $card = Card::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $link = $card->links()->where('id', $linkId)->where('is_active', true)->firstOrFail();
+        $link->increment('click_count');
+        return redirect()->away($link->url);
+    }
+
+    private static function detectSource(string $referer): string
+    {
+        if (empty($referer)) return 'direct';
+        $r = strtolower($referer);
+        return match (true) {
+            str_contains($r, 'whatsapp') || str_contains($r, 'wa.me')      => 'whatsapp',
+            str_contains($r, 'instagram')                                   => 'instagram',
+            str_contains($r, 'google')                                      => 'google',
+            str_contains($r, 'facebook') || str_contains($r, 'fb.com')     => 'facebook',
+            str_contains($r, 'linkedin')                                    => 'linkedin',
+            str_contains($r, 'twitter') || str_contains($r, 'x.com')       => 'twitter',
+            str_contains($r, 'tiktok')                                      => 'tiktok',
+            str_contains($r, 't.me') || str_contains($r, 'telegram')       => 'telegram',
+            default                                                          => 'outros',
+        };
     }
 
     public function vcard(string $slug, VCardService $vcardService): Response

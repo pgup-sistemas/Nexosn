@@ -3,7 +3,7 @@
  * Estratégias: Cache First | Stale-While-Revalidate | Network First | Network Only
  */
 
-const SW_VERSION = 'nexosn-v1';
+const SW_VERSION = 'nexosn-v2';
 
 const PRECACHE = [
     '/offline.html',

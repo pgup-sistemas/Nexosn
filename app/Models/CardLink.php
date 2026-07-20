@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CardLink extends Model
 {
-    protected $fillable = ['card_id', 'label', 'url', 'icon', 'type', 'order', 'is_active'];
+    protected $fillable = ['card_id', 'label', 'url', 'icon', 'type', 'order', 'is_active', 'click_count'];
 
     protected $casts = ['is_active' => 'boolean'];
 

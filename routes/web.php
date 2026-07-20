@@ -62,5 +62,6 @@ Route::get('/u/{slug}/contato.vcf', [CardController::class, 'vcard'])->name('car
 Route::get('/u/{slug}/qr.svg', [CardController::class, 'qrSvg'])->name('card.qr.svg');
 Route::get('/u/{slug}/qr.png', [CardController::class, 'qrPng'])->name('card.qr.png');
 Route::get('/u/{slug}/agendar/slots', [AppointmentController::class, 'slots'])->name('card.slots');
+Route::get('/u/{slug}/link/{linkId}', [CardController::class, 'trackClick'])->name('card.link.click');
 
 require __DIR__.'/auth.php';

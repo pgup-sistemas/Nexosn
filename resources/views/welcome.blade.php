@@ -1613,6 +1613,253 @@ a { text-decoration: none; }
     </div>
 </section>
 
+<!-- ═══ COMPARATIVO ═══ -->
+<section class="section section-alt" id="comparativo">
+    <div class="container">
+        <div class="section-header" style="text-align:center;">
+            <div class="section-tag">Por que NEXOSN?</div>
+            <h2 class="section-title">Mais completo que qualquer alternativa</h2>
+            <p class="section-sub" style="margin:0 auto;">Comparamos com os líderes internacionais. O resultado fala por si.</p>
+        </div>
+
+        <style>
+        .cmp-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid #E0E0DE; }
+        .cmp-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        .cmp-table thead th {
+            padding: 12px 14px; text-align: center; font-size: 11px; font-weight: 700;
+            letter-spacing: .04em; background: #fff; border-bottom: 1px solid #E0E0DE;
+            white-space: nowrap;
+        }
+        .cmp-table thead th:first-child { text-align: left; min-width: 180px; }
+        .cmp-table thead th.cmp-us { background: #003049; color: #FCBF49; }
+        .cmp-cat td {
+            padding: 7px 14px 4px; font-size: 10px; font-weight: 700;
+            letter-spacing: .1em; text-transform: uppercase;
+            color: #888; background: #F6F5F3; border-top: 1px solid #E0E0DE;
+        }
+        .cmp-table tbody tr:not(.cmp-cat) td {
+            padding: 9px 14px; border-bottom: 1px solid #F0F0EE; vertical-align: middle;
+        }
+        .cmp-table tbody tr:last-child td { border-bottom: none; }
+        .cmp-table tbody tr:not(.cmp-cat):hover td { background: #FAFAFA; }
+        td.cmp-val { text-align: center; }
+        td.cmp-val.cmp-us { background: rgba(0,48,73,.04); }
+        .cv { font-size: 15px; }
+        .cv-y { color: #22c55e; }
+        .cv-n { color: #D1D5DB; font-size: 12px; }
+        .cv-p { color: #D29922; font-size: 11px; font-weight: 600; }
+        .cv-u { display: inline-flex; align-items: center; gap: 4px; }
+        .badge-uniq {
+            font-size: 9px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+            background: #FCBF49; color: #1a0f00; padding: 2px 6px; border-radius: 99px;
+        }
+        .cmp-score-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+        .cmp-score {
+            flex: 1; min-width: 140px; background: #fff; border: 1px solid #E0E0DE;
+            border-radius: 12px; padding: 14px 16px;
+        }
+        .cmp-score.us { border-color: #FCBF49; }
+        .cmp-score-name { font-size: 14px; font-weight: 700; color: #1a1f2e; margin-bottom: 2px; }
+        .cmp-score-role { font-size: 11px; color: #888; margin-bottom: 10px; }
+        .cmp-bar-track { height: 5px; background: #E0E0DE; border-radius: 99px; overflow: hidden; }
+        .cmp-bar-fill  { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+        .cmp-pct { font-size: 13px; font-weight: 700; color: #003049; margin-top: 5px; }
+        </style>
+
+        {{-- Scorecards --}}
+        <div class="cmp-score-row">
+            <div class="cmp-score us">
+                <div class="cmp-score-name">NEXOSN</div>
+                <div class="cmp-score-role">Você está aqui</div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="background:#FCBF49;" data-pct="88"></div></div>
+                <div class="cmp-pct">88 / 100</div>
+            </div>
+            <div class="cmp-score">
+                <div class="cmp-score-name">Linktree</div>
+                <div class="cmp-score-role">Link-in-bio líder</div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="background:#22c55e;" data-pct="55"></div></div>
+                <div class="cmp-pct">55 / 100</div>
+            </div>
+            <div class="cmp-score">
+                <div class="cmp-score-name">Beacons</div>
+                <div class="cmp-score-role">Creator tools</div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="background:#22c55e;" data-pct="48"></div></div>
+                <div class="cmp-pct">48 / 100</div>
+            </div>
+            <div class="cmp-score">
+                <div class="cmp-score-name">HiHello</div>
+                <div class="cmp-score-role">Cartão digital</div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="background:#22c55e;" data-pct="42"></div></div>
+                <div class="cmp-pct">42 / 100</div>
+            </div>
+            <div class="cmp-score">
+                <div class="cmp-score-name">Blinq</div>
+                <div class="cmp-score-role">NFC + cartão</div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill" style="background:#22c55e;" data-pct="35"></div></div>
+                <div class="cmp-pct">35 / 100</div>
+            </div>
+        </div>
+
+        {{-- Tabela --}}
+        <div class="cmp-wrap">
+            <table class="cmp-table">
+                <thead>
+                    <tr>
+                        <th>Funcionalidade</th>
+                        <th class="cmp-us">NEXOSN</th>
+                        <th>Linktree</th>
+                        <th>Beacons</th>
+                        <th>HiHello</th>
+                        <th>Blinq</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="cmp-cat"><td colspan="6">Links &amp; Perfil</td></tr>
+                    <tr>
+                        <td>Links customizados</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Detecção automática de rede social</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Foto de perfil + capa + galeria</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">parcial</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">parcial</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+
+                    <tr class="cmp-cat"><td colspan="6">Cartão de Visita Digital</td></tr>
+                    <tr>
+                        <td>Download vCard (.vcf)</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>QR Code do perfil</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cores de marca personalizadas</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">Pro $</span></td>
+                        <td class="cmp-val"><span class="cv cv-y">✓</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">~</span></td>
+                    </tr>
+
+                    <tr class="cmp-cat"><td colspan="6">Comunicação</td></tr>
+                    <tr>
+                        <td>Formulário de contato nativo</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Caixa de mensagens no painel</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+
+                    <tr class="cmp-cat"><td colspan="6">Agendamento</td></tr>
+                    <tr>
+                        <td>Agenda nativa no cartão</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Confirmação manual de agendamentos</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+
+                    <tr class="cmp-cat"><td colspan="6">Pagamentos &amp; Mercado BR</td></tr>
+                    <tr>
+                        <td>PIX integrado no perfil</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">BR único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Analytics: gráfico 30 dias + origem + clicks</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-p">Pro $</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">Pro $</span></td>
+                        <td class="cmp-val"><span class="cv cv-p">parcial</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>PWA — funciona offline</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Português BR nativo + preço em R$</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">BR único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-p">~</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p style="text-align:center;font-size:12px;color:#888;margin-top:16px;">
+            Dados baseados nos planos públicos de cada plataforma. Julho/2026.
+        </p>
+    </div>
+
+    <script>
+    (function(){
+        const fills = document.querySelectorAll('.cmp-bar-fill');
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.style.width = e.target.dataset.pct + '%';
+                    io.unobserve(e.target);
+                }
+            });
+        }, { threshold: .3 });
+        fills.forEach(f => { f.style.width = '0'; io.observe(f); });
+    })();
+    </script>
+</section>
+
 <!-- ═══ FAQ ═══ -->
 <section class="section" id="faq">
     <div class="container">
