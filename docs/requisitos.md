@@ -61,6 +61,8 @@
 | C-11 | Slug personalizado (`/u/meu-nome`) | Free/Pro |
 | C-12 | Ativar/desativar cartão sem excluir | Free/Pro |
 | C-13 | Marca d'água "Criado com Card" no rodapé | Free (removível no Pro) |
+| C-14 | Localização — endereço exibido como botão tappable que abre Google Maps | Free/Pro |
+| C-15 | Compartilhar localização — Web Share API no mobile, fallback copia link Google Maps | Free/Pro |
 
 ---
 

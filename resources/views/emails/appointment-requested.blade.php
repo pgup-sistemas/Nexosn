@@ -48,6 +48,6 @@ h2 { color: #003049; margin-top: 0; }
         Links válidos por 7 dias · {{ now()->format('d/m/Y H:i') }}
     </p>
 </div>
-<div class="footer">Card · Cartão de visita digital · <a href="{{ url('/') }}">card.app.br</a></div>
+<div class="footer">NEXOSN · Identidade digital inteligente · <a href="{{ url('/') }}">nexosn.pageup.net.br</a></div>
 </body>
 </html>

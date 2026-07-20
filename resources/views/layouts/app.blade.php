@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'Painel' }} | Card</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ $title ?? 'Painel' }} | NEXOSN</title>
+    <meta name="description" content="Painel NEXOSN — gerencie sua identidade digital, links, agenda e muito mais.">
+    <meta name="application-name" content="NEXOSN">
+    <meta name="theme-color" content="#003049">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
@@ -29,7 +33,18 @@
                style="background-color: var(--color-primary, #003049);">
 
             <div class="flex h-16 items-center px-6 shrink-0">
-                <a href="{{ route('dashboard') }}" class="text-white text-xl font-semibold tracking-tight">Card</a>
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-white font-black tracking-widest" style="font-size:16px;letter-spacing:.12em;text-decoration:none;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:#FCBF49;flex-shrink:0;">
+                        <line x1="5" y1="5"  x2="5"  y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                        <line x1="5" y1="5"  x2="19" y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                        <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                        <circle cx="5"  cy="5"  r="2.75" fill="currentColor"/>
+                        <circle cx="5"  cy="19" r="2.75" fill="currentColor"/>
+                        <circle cx="19" cy="5"  r="2.75" fill="currentColor"/>
+                        <circle cx="19" cy="19" r="2.75" fill="currentColor"/>
+                    </svg>
+                    NEX<span style="opacity:.55;font-weight:700;">OSN</span>
+                </a>
             </div>
 
             <nav class="flex-1 mt-2 px-3 space-y-0.5 overflow-y-auto">

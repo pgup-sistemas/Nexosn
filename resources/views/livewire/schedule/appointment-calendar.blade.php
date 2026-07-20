@@ -125,13 +125,21 @@
 
             {{-- Slots do dia selecionado --}}
             @if ($selectedDate)
-            <div class="mt-4">
-                <p class="text-[12px] font-medium text-gray-600 mb-2">
-                    Horários — {{ \Carbon\Carbon::parse($selectedDate)->format('d/m') }}
-                </p>
+            <div class="mt-4" id="nexosn-slots-wrap">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-[12px] font-medium text-gray-600">
+                        Horários — {{ \Carbon\Carbon::parse($selectedDate)->format('d/m') }}
+                    </p>
+                    <span id="nexosn-slots-cache-badge"
+                          style="display:none;font-size:10px;font-weight:600;color:#7a4600;
+                                 background:#FFF3CD;border:1px solid #F77F00;border-radius:6px;
+                                 padding:2px 7px;line-height:1.5;">
+                        📶 cache
+                    </span>
+                </div>
 
                 @if (count($availableSlots) > 0)
-                <div class="grid grid-cols-3 gap-2">
+                <div class="grid grid-cols-3 gap-2" id="nexosn-slots-grid">
                     @foreach ($availableSlots as $slot)
                     <button wire:click="selectTime('{{ $slot }}')"
                             class="py-2 rounded-[8px] text-[12px] font-medium border transition hover:opacity-90"
@@ -141,7 +149,9 @@
                     @endforeach
                 </div>
                 @else
-                <p class="text-[12px] text-gray-400 text-center py-3">Nenhum horário disponível neste dia.</p>
+                <div id="nexosn-slots-grid">
+                    <p class="text-[12px] text-gray-400 text-center py-3">Nenhum horário disponível neste dia.</p>
+                </div>
                 @endif
             </div>
             @endif
@@ -151,3 +161,90 @@
     @endif
 
 </div>
+
+<script>
+(function () {
+    const SLUG       = '{{ $card->slug ?? ($schedule->card->slug ?? "") }}';
+    const TTL_MS     = 60 * 60 * 1000; // 1 hora
+    const KEY_PREFIX = 'nexosn_slots_' + SLUG + '_';
+
+    function slotsKey(date) { return KEY_PREFIX + date; }
+
+    // Salva slots do DOM no localStorage após atualização do Livewire
+    function persistSlots() {
+        const grid = document.getElementById('nexosn-slots-grid');
+        if (!grid) return;
+        const btns = Array.from(grid.querySelectorAll('button'));
+        if (!btns.length) return;
+        const slots = btns.map(b => b.textContent.trim());
+        const date  = '{{ $selectedDate }}';
+        if (!date) return;
+        try {
+            localStorage.setItem(slotsKey(date), JSON.stringify({ slots, ts: Date.now() }));
+        } catch (e) {}
+    }
+
+    // Injeta slots do cache no DOM quando offline
+    function injectCachedSlots(date) {
+        const grid  = document.getElementById('nexosn-slots-grid');
+        const badge = document.getElementById('nexosn-slots-cache-badge');
+        if (!grid || !badge) return;
+
+        // Se já há slots visíveis renderizados pelo Livewire, persiste e sai
+        if (grid.querySelectorAll('button').length > 0) {
+            persistSlots();
+            badge.style.display = 'none';
+            return;
+        }
+
+        try {
+            const raw = localStorage.getItem(slotsKey(date));
+            if (!raw) return;
+            const { slots, ts } = JSON.parse(raw);
+            if (Date.now() - ts > TTL_MS) return; // cache expirado
+            if (!slots || !slots.length) return;
+
+            // Montar grid com slots do cache
+            const primary = getComputedStyle(document.documentElement)
+                .getPropertyValue('--card-primary').trim() || '#003049';
+            grid.innerHTML = slots.map(s =>
+                `<button class="py-2 rounded-[8px] text-[12px] font-medium border transition hover:opacity-90"
+                         style="border-color:${primary};color:${primary};background:white;"
+                         onclick="window.nexosnSelectCachedSlot('${s}')">${s}</button>`
+            ).join('');
+            badge.style.display = 'inline-block';
+        } catch (e) {}
+    }
+
+    // Proxy: ao clicar num slot do cache tenta delegar ao Livewire
+    window.nexosnSelectCachedSlot = function (time) {
+        if (!navigator.onLine) {
+            alert('Você está offline. Conecte-se para finalizar o agendamento.');
+            return;
+        }
+        // Recarrega a página para Livewire processar normalmente
+        window.location.reload();
+    };
+
+    // Rodar após cada atualização do Livewire
+    function onLivewireUpdate() {
+        const date = '{{ $selectedDate }}';
+        if (navigator.onLine) {
+            persistSlots();
+            const badge = document.getElementById('nexosn-slots-cache-badge');
+            if (badge) badge.style.display = 'none';
+        } else {
+            injectCachedSlots(date);
+        }
+    }
+
+    document.addEventListener('livewire:updated',   onLivewireUpdate);
+    document.addEventListener('livewire:navigated', onLivewireUpdate);
+    document.addEventListener('DOMContentLoaded',   onLivewireUpdate);
+    window.addEventListener('offline', function () { injectCachedSlots('{{ $selectedDate }}'); });
+    window.addEventListener('online',  function () {
+        const badge = document.getElementById('nexosn-slots-cache-badge');
+        if (badge) badge.style.display = 'none';
+    });
+})();
+</script>

@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 
+// Páginas legais
+Route::prefix('legal')->name('legal.')->group(function () {
+    Route::view('privacidade', 'legal.privacidade')->name('privacidade');
+    Route::view('cookies',     'legal.cookies')->name('cookies');
+    Route::view('termos',      'legal.termos')->name('termos');
+});
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 

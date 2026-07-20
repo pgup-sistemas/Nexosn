@@ -13,7 +13,7 @@ h2 { color: #D62828; margin-top: 0; }
 <div class="card">
     <h2>Seu plano Pro expirou</h2>
     <p>Olá, {{ $user->name }}. Seu plano Pro expirou e sua conta foi migrada para o plano Free.</p>
-    <p>Você ainda pode usar o Card gratuitamente com até 5 links e 3 fotos.</p>
+    <p>Você ainda pode usar a NEXOSN gratuitamente com até 5 links e 3 fotos.</p>
     <p style="text-align:center; margin: 20px 0;">
         <a href="{{ url('/dashboard/plan') }}"
            style="background:#003049; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:600;">
@@ -21,6 +21,6 @@ h2 { color: #D62828; margin-top: 0; }
         </a>
     </p>
 </div>
-<div class="footer">Card · Cartão de visita digital · <a href="{{ url('/') }}">card.app.br</a></div>
+<div class="footer">NEXOSN · Identidade digital inteligente · <a href="{{ url('/') }}">nexosn.pageup.net.br</a></div>
 </body>
 </html>

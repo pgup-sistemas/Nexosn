@@ -10,7 +10,7 @@ use Illuminate\Http\Response;
 
 class CardController extends Controller
 {
-    public function show(string $slug)
+    public function show(string $slug, QrCodeService $qrService)
     {
         $card = Card::with(['user', 'links' => fn ($q) => $q->where('is_active', true), 'photos', 'schedule.slots'])
             ->where('slug', $slug)
@@ -24,7 +24,10 @@ class CardController extends Controller
             'referer'    => request()->header('referer'),
         ]);
 
-        return view('card.show', compact('card'));
+        // QR Code inline: evita requisição extra — funciona offline após 1ª carga
+        $qrSvg = $qrService->generateSvg($card);
+
+        return view('card.show', compact('card', 'qrSvg'));
     }
 
     public function vcard(string $slug, VCardService $vcardService): Response

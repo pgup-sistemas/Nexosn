@@ -34,6 +34,6 @@ h2 { color: #003049; margin-top: 0; }
         @endif
     </div>
 </div>
-<div class="footer">Card · Cartão de visita digital · <a href="{{ url('/') }}">card.app.br</a></div>
+<div class="footer">NEXOSN · Identidade digital inteligente · <a href="{{ url('/') }}">nexosn.pageup.net.br</a></div>
 </body>
 </html>

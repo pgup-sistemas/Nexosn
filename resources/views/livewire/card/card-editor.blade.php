@@ -167,9 +167,24 @@
                 @error('website')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
             <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Endereço</label>
+                <label class="text-xs font-medium text-gray-600 flex items-center gap-1.5">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5" style="color: var(--color-primary);"></i>
+                    Endereço / Localização
+                </label>
                 <input wire:model="address" type="text" maxlength="255"
+                       placeholder="Ex: Av. Lauro Sodré, 1234, Porto Velho, RO"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @if ($card->address)
+                <a href="https://maps.google.com/?q={{ urlencode($card->address) }}" target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-1 text-[11px] text-blue-600 hover:underline mt-0.5">
+                    <i data-lucide="external-link" class="w-3 h-3"></i>
+                    Ver no Google Maps
+                </a>
+                @else
+                <p class="text-[11px] text-gray-400 mt-0.5">
+                    Um botão de mapa será exibido automaticamente no seu cartão.
+                </p>
+                @endif
                 @error('address')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
             <div class="space-y-1">

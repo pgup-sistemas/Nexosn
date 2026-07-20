@@ -67,8 +67,16 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     <div class="text-center mb-6">
         <div class="flex items-center justify-center gap-2">
-            <svg data-lucide="credit-card" class="w-7 h-7" style="color: #FCBF49;"></svg>
-            <span class="text-xl font-semibold" style="color: #003049;">Card</span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="color:#003049;flex-shrink:0;">
+                <line x1="5" y1="5"  x2="5"  y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                <line x1="5" y1="5"  x2="19" y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
+                <circle cx="5"  cy="5"  r="2.75" fill="currentColor"/>
+                <circle cx="5"  cy="19" r="2.75" fill="currentColor"/>
+                <circle cx="19" cy="5"  r="2.75" fill="currentColor"/>
+                <circle cx="19" cy="19" r="2.75" fill="currentColor"/>
+            </svg>
+            <span class="font-black tracking-widest" style="color:#003049;font-size:18px;letter-spacing:.1em;">NEX<span style="opacity:.45;font-weight:700;">OSN</span></span>
         </div>
         <p class="text-sm text-gray-500 mt-1">Crie sua conta gratuitamente</p>
     </div>

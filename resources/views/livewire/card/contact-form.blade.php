@@ -16,7 +16,20 @@
             </button>
         </div>
     @else
-        <form wire:submit="submit" class="space-y-2">
+        {{-- Banner offline --}}
+        <div id="nexosn-form-offline-banner" style="display:none;background:#FFF3CD;border:1px solid #F77F00;
+             border-radius:8px;padding:10px 12px;font-size:12px;color:#7a4600;margin-bottom:10px;line-height:1.5;">
+            📶 <strong>Você está offline.</strong> Sua mensagem será salva e enviada automaticamente quando a conexão voltar.
+        </div>
+        {{-- Confirmação de mensagem salva offline --}}
+        <div id="nexosn-form-saved-banner" style="display:none;background:#e6f4ea;border:1px solid #16a34a;
+             border-radius:8px;padding:10px 12px;font-size:12px;color:#14532d;margin-bottom:10px;line-height:1.5;">
+            ✓ <strong>Mensagem salva!</strong> Será enviada assim que você reconectar.
+        </div>
+
+        <form wire:submit="submit" class="space-y-2"
+              x-data="{}"
+              @submit.prevent="nexosnFormSubmit($el, $event)">
 
             {{-- Honeypot (oculto de humanos) --}}
             <div class="hidden" aria-hidden="true">
@@ -55,3 +68,66 @@
         </form>
     @endif
 </div>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'nexosn_pending_msg_{{ $card->slug }}';
+
+    // Mostrar/ocultar banner offline no formulário
+    function updateOfflineBanner() {
+        const banner = document.getElementById('nexosn-form-offline-banner');
+        if (banner) banner.style.display = navigator.onLine ? 'none' : 'block';
+    }
+    updateOfflineBanner();
+    window.addEventListener('offline', updateOfflineBanner);
+    window.addEventListener('online',  updateOfflineBanner);
+
+    // Verificar e reenviar mensagem pendente quando voltar online
+    window.addEventListener('online', function () {
+        const pending = localStorage.getItem(STORAGE_KEY);
+        if (!pending) return;
+        try {
+            const d = JSON.parse(pending);
+            // Preencher os campos e disparar o submit Livewire
+            const form = document.querySelector('[id^="nexosn-contact-form"]') || document.querySelector('form');
+            if (!form) return;
+            const setField = (wire, val) => {
+                const el = form.querySelector('[wire\\:model="' + wire + '"]');
+                if (el) { el.value = val; el.dispatchEvent(new Event('input')); }
+            };
+            setField('senderName',  d.senderName);
+            setField('senderEmail', d.senderEmail);
+            setField('senderPhone', d.senderPhone || '');
+            setField('message',     d.message);
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (e) {}
+    });
+
+    // Submit interceptor: salva offline, envia online
+    window.nexosnFormSubmit = function (formEl, event) {
+        if (navigator.onLine) {
+            // Deixar Livewire processar normalmente
+            formEl.dispatchEvent(new CustomEvent('livewire-submit'));
+            return;
+        }
+        // Offline: salvar no localStorage
+        const get = (wire) => {
+            const el = formEl.querySelector('[wire\\:model="' + wire + '"]');
+            return el ? el.value : '';
+        };
+        const data = {
+            senderName:  get('senderName'),
+            senderEmail: get('senderEmail'),
+            senderPhone: get('senderPhone'),
+            message:     get('message'),
+        };
+        if (!data.senderName || !data.message) return; // deixar validação Livewire agir
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const savedBanner = document.getElementById('nexosn-form-saved-banner');
+        if (savedBanner) {
+            savedBanner.style.display = 'block';
+            setTimeout(() => savedBanner.style.display = 'none', 8000);
+        }
+    };
+})();
+</script>
