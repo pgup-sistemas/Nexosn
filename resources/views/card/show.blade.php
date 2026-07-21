@@ -147,26 +147,59 @@
     .sd { width: 4px; height: 4px; border-radius: 50%; background: #d1d5db; transition: all .22s; }
     .sd.on { width: 14px; border-radius: 3px; background: var(--card-primary); }
 
-    /* barra de ação principal (logo abaixo da identidade) */
+    /* barra de ação — ícones circulares + label */
     .action-bar {
-        display: grid; grid-template-columns: 1fr 1fr;
-        gap: 8px; padding: 8px 14px 10px;
+        display: flex; justify-content: center; gap: 28px;
+        padding: 14px 16px 16px;
         background: #fff;
     }
-    .action-bar-btn {
-        display: flex; align-items: center; justify-content: center; gap: 7px;
-        height: 46px; border-radius: 12px;
+    .action-icon-btn {
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        background: none; border: none; cursor: pointer; padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        transition: transform .12s, opacity .12s;
+        text-decoration: none; min-width: 56px;
+    }
+    .action-icon-btn:active { transform: scale(.92); opacity: .75; }
+    .action-icon-circle {
+        width: 52px; height: 52px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .action-icon-circle-primary {
+        background-color: var(--card-button);
+    }
+    .action-icon-circle-ghost {
+        background: #f0f0ef;
+        border: 1px solid rgba(0,0,0,0.07);
+    }
+    .action-icon-label {
+        font-size: 11px; font-weight: 600; color: #6b7280;
+        text-align: center; line-height: 1.3; white-space: nowrap;
+    }
+
+    /* links customizados — compactos, outline */
+    .clink-wrap {
+        padding: 6px 14px 2px;
+        display: flex; flex-direction: column; gap: 6px;
+    }
+    .clink {
+        display: flex; align-items: center; gap: 10px;
+        padding: 11px 16px; border-radius: 12px; min-height: 44px;
         font-size: 13px; font-weight: 600; cursor: pointer;
-        text-decoration: none; border: none;
-        transition: opacity .15s, transform .12s;
+        text-decoration: none; border: 1.5px solid rgba(0,0,0,0.09);
+        background: #fff; color: var(--ui-heading);
+        transition: background .12s, transform .12s;
         -webkit-tap-highlight-color: transparent;
     }
-    .action-bar-btn:active { transform: scale(.97); opacity: .85; }
-    .action-bar-primary { background-color: var(--card-button); color: #fff; }
-    .action-bar-secondary {
-        background: #f4f4f3; color: var(--ui-text);
-        border: 1px solid var(--ui-border);
+    .clink:active { transform: scale(.98); background: #f8f8f7; }
+    .clink-icon {
+        width: 32px; height: 32px; border-radius: 8px;
+        background-color: var(--card-button);
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
     }
+    .clink span { flex: 1; }
 </style>
 @endsection
 
@@ -258,15 +291,25 @@
         </div>
     </div>
 
-    {{-- Barra de ação principal --}}
+    {{-- Barra de ação — ícones circulares + label --}}
     <div class="action-bar">
-        <button type="button" onclick="nexosnDownloadVCard()" class="action-bar-btn action-bar-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.9;"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-            Salvar contato
+        <button type="button" onclick="nexosnDownloadVCard()" class="action-icon-btn">
+            <div class="action-icon-circle action-icon-circle-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            </div>
+            <span class="action-icon-label">Salvar<br>contato</span>
         </button>
-        <button type="button" onclick="nexosnShareNative()" class="action-bar-btn action-bar-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:.7;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            Compartilhar
+        <button type="button" onclick="nexosnShareNative()" class="action-icon-btn">
+            <div class="action-icon-circle action-icon-circle-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </div>
+            <span class="action-icon-label">Compartilhar</span>
+        </button>
+        <button type="button" onclick="nexosnCopyLink()" class="action-icon-btn">
+            <div class="action-icon-circle action-icon-circle-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </div>
+            <span class="action-icon-label">Copiar link</span>
         </button>
     </div>
 
@@ -276,11 +319,14 @@
 
 {{-- ═══════════════════ LINKS CUSTOMIZADOS ═══════════════════ --}}
 @if ($customLinks->isNotEmpty())
-<div style="padding:8px 14px 4px;display:flex;flex-direction:column;gap:7px;">
+<div class="clink-wrap">
     @foreach ($customLinks as $link)
-        <a href="{{ route('card.link.click', [$card->slug, $link->id]) }}" rel="noopener" class="abtn abtn-primary">
-            <i data-lucide="{{ $link->lucide_icon }}" style="width:16px;height:16px;opacity:.85;"></i>
+        <a href="{{ route('card.link.click', [$card->slug, $link->id]) }}" rel="noopener" class="clink">
+            <div class="clink-icon">
+                <svg data-lucide="{{ $link->lucide_icon }}" width="15" height="15" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </div>
             <span>{{ $link->label }}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
     @endforeach
 </div>
