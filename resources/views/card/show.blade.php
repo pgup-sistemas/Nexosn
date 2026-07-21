@@ -1152,4 +1152,36 @@ function nexosnDownloadVCard() {
     </div>
 </div>
 
+{{-- ═══════════════════ BANNER DE COOKIES ═══════════════════ --}}
+<div id="cookie-banner"
+     style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9990;
+            background:#1a1f2e;padding:14px 16px 20px;box-shadow:0 -4px 24px rgba(0,0,0,.25);">
+    <p style="font-size:12px;color:rgba(255,255,255,.8);line-height:1.55;margin:0 0 12px;">
+        {!! \App\Models\AppSetting::get('cookie_banner_text', 'Usamos cookies essenciais. Ao continuar, você concorda com nossa <a href="/legal/cookies" style="color:#FCBF49;">Política de Cookies</a>.') !!}
+    </p>
+    <div style="display:flex;gap:8px;">
+        <button onclick="cookieConsent('all')"
+                style="flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;
+                       font-size:12px;font-weight:700;background:#FCBF49;color:#1a1f2e;">
+            Aceitar todos
+        </button>
+        <button onclick="cookieConsent('essential')"
+                style="flex:1;padding:10px;border-radius:10px;border:none;cursor:pointer;
+                       font-size:12px;font-weight:600;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);">
+            Apenas essenciais
+        </button>
+    </div>
+</div>
+<script>
+(function () {
+    if (!localStorage.getItem('cookie_consent')) {
+        document.getElementById('cookie-banner').style.display = 'block';
+    }
+})();
+function cookieConsent(choice) {
+    localStorage.setItem('cookie_consent', choice);
+    document.getElementById('cookie-banner').style.display = 'none';
+}
+</script>
+
 @endsection

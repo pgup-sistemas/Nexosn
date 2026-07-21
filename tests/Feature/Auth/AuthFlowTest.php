@@ -21,7 +21,8 @@ class AuthFlowTest extends TestCase
             ->set('slug', 'joao-silva')
             ->set('email', 'joao@teste.com')
             ->set('password', 'password123')
-            ->set('password_confirmation', 'password123');
+            ->set('password_confirmation', 'password123')
+            ->set('terms', true);
 
         $component->call('register');
 

@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'plan',
         'plan_expires_at',
         'trial_ends_at',
+        'terms_accepted_at',
         'efi_subscription_id',
     ];
 
@@ -33,9 +34,10 @@ class User extends Authenticatable implements MustVerifyEmail
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'plan_expires_at'   => 'datetime',
-            'trial_ends_at'     => 'datetime',
+            'email_verified_at'  => 'datetime',
+            'plan_expires_at'    => 'datetime',
+            'trial_ends_at'      => 'datetime',
+            'terms_accepted_at'  => 'datetime',
             'password'          => 'hashed',
         ];
     }

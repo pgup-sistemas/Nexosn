@@ -15,6 +15,7 @@ new #[Layout('layouts.guest')] class extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public bool   $terms = false;
 
     public function register(): void
     {
@@ -39,6 +40,7 @@ new #[Layout('layouts.guest')] class extends Component
             ],
             'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'terms'    => ['accepted'],
         ], [
             'name.required'     => 'Informe seu nome completo.',
             'slug.required'     => 'Informe seu link personalizado.',
@@ -51,10 +53,13 @@ new #[Layout('layouts.guest')] class extends Component
             'email.unique'      => 'Este e-mail já está cadastrado.',
             'password.required' => 'Informe uma senha.',
             'password.confirmed'=> 'As senhas não conferem.',
+            'terms.accepted'    => 'Você precisa aceitar os Termos de Uso para continuar.',
         ]);
 
-        $validated['password'] = Hash::make($validated['password']);
-        $validated['plan']     = 'free';
+        $validated['password']          = Hash::make($validated['password']);
+        $validated['plan']              = 'free';
+        $validated['terms_accepted_at'] = now();
+        unset($validated['terms']);
 
         event(new Registered($user = User::create($validated)));
 
@@ -148,6 +153,22 @@ new #[Layout('layouts.guest')] class extends Component
                    class="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:border-[#003049] focus:ring-1 focus:ring-[#003049] transition"
                    placeholder="Repita a senha" required autocomplete="new-password">
             @error('password_confirmation')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+        </div>
+
+        {{-- Aceite dos Termos --}}
+        <div>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+                <input wire:model="terms" type="checkbox" id="terms"
+                       class="mt-0.5 rounded border-gray-300 text-[#003049] focus:ring-[#003049] flex-shrink-0">
+                <span class="text-xs text-gray-600 leading-relaxed">
+                    Li e aceito os
+                    <a href="{{ route('legal.termos') }}" target="_blank" class="font-medium underline" style="color:#003049;">Termos de Uso</a>
+                    e a
+                    <a href="{{ route('legal.privacidade') }}" target="_blank" class="font-medium underline" style="color:#003049;">Política de Privacidade</a>
+                    da NEXOSN.
+                </span>
+            </label>
+            @error('terms')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
         </div>
 
         {{-- Submit --}}
