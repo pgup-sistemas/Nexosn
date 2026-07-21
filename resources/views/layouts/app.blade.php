@@ -85,11 +85,13 @@
                       md:relative md:translate-x-0"
                style="background-color:#003049;">
 
-            {{-- Logo --}}
-            <div class="h-16 flex items-center shrink-0 border-b border-white/10"
-                 :class="collapsed ? 'justify-center px-0' : 'px-5 gap-2'">
-                <a href="{{ route('dashboard') }}"
-                   class="flex items-center gap-2 text-white font-black tracking-widest shrink-0"
+            {{-- Logo + botão recolher --}}
+            <div class="h-16 flex items-center shrink-0 border-b border-white/10 relative"
+                 :class="collapsed ? 'justify-center px-0' : 'px-4'">
+
+                {{-- Logo (some quando recolhido) --}}
+                <a href="{{ route('dashboard') }}" x-show="!collapsed"
+                   class="flex items-center gap-2 text-white font-black tracking-widest shrink-0 flex-1"
                    style="font-size:15px;letter-spacing:.12em;text-decoration:none;">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="color:#FCBF49;flex-shrink:0;">
                         <line x1="5" y1="5"  x2="5"  y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
@@ -100,11 +102,21 @@
                         <circle cx="19" cy="5"  r="2.75" fill="currentColor"/>
                         <circle cx="19" cy="19" r="2.75" fill="currentColor"/>
                     </svg>
-                    <span class="sidebar-logo-text overflow-hidden whitespace-nowrap"
-                          :style="collapsed ? 'opacity:0;max-width:0;overflow:hidden' : 'opacity:1;max-width:120px'">
-                        NEX<span style="opacity:.55;font-weight:700;">OSN</span>
-                    </span>
+                    NEX<span style="opacity:.55;font-weight:700;">OSN</span>
                 </a>
+
+                {{-- Botão recolher (só desktop) --}}
+                <button @click="toggleCollapse()"
+                        class="hidden md:flex items-center justify-center rounded-lg transition-colors shrink-0"
+                        :class="collapsed ? 'w-9 h-9 hover:bg-white/10' : 'w-8 h-8 hover:bg-white/10'"
+                        :title="collapsed ? 'Expandir menu' : 'Recolher menu'">
+                    <svg x-show="!collapsed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m14 9-3 3 3 3"/>
+                    </svg>
+                    <svg x-show="collapsed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="m11 15 3-3-3-3"/>
+                    </svg>
+                </button>
             </div>
 
             {{-- Nav --}}
@@ -136,12 +148,13 @@
                 @php $isActive = request()->routeIs($item['routeIs']); @endphp
                 <a href="{{ route($item['route']) }}" wire:navigate
                    class="relative flex items-center gap-3 rounded-lg text-sm font-medium transition-colors group mb-0.5"
-                   :class="collapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2.5 mx-0'"
+                   :class="collapsed ? 'justify-center mx-auto' : 'px-3 py-2 mx-0'"
+                   :style="collapsed ? 'width:40px;height:40px;' : ''"
                    style="{{ $isActive ? 'background:rgba(255,255,255,.15);color:#fff;' : 'color:rgba(255,255,255,.65);' }}"
                    @mouseenter="$el.style.color='#fff'; if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='rgba(255,255,255,.08)'"
                    @mouseleave="$el.style.color='{{ $isActive ? '#fff' : 'rgba(255,255,255,.65)' }}'; if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='transparent'">
 
-                    <i data-lucide="{{ $item['icon'] }}" class="w-4 h-4 shrink-0"></i>
+                    <i data-lucide="{{ $item['icon'] }}" class="w-[18px] h-[18px] shrink-0"></i>
 
                     {{-- Label (visível quando expandido) --}}
                     <span class="sidebar-label flex-1 whitespace-nowrap overflow-hidden"
@@ -151,13 +164,13 @@
 
                     {{-- Badge --}}
                     @if (!empty($item['badge']))
-                    <span class="sidebar-label ml-auto min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold text-white px-1 shrink-0"
+                    <span class="ml-auto min-w-[18px] h-[18px] flex items-center justify-center rounded-full text-[10px] font-bold text-white px-1 shrink-0"
                           :style="collapsed ? 'display:none' : ''"
                           style="background-color:#D62828;">
                         {{ $item['badge'] > 99 ? '99+' : $item['badge'] }}
                     </span>
                     {{-- Badge colapsado — pontinho vermelho --}}
-                    <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 border border-[#003049]"
+                    <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500"
                           :style="collapsed ? '' : 'display:none'"></span>
                     @endif
 
@@ -167,23 +180,15 @@
                 @endforeach
             </nav>
 
-            {{-- Ver cartão + toggle --}}
+            {{-- Ver cartão --}}
             <div class="shrink-0 border-t border-white/10 p-2">
                 <a href="/u/{{ auth()->user()->card?->slug }}" target="_blank"
-                   class="flex items-center gap-2 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors mb-1"
+                   class="relative flex items-center gap-2 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors group"
                    :class="collapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2.5'">
                     <i data-lucide="external-link" class="w-3.5 h-3.5 shrink-0"></i>
-                    <span :style="collapsed ? 'display:none' : ''">Ver meu cartão</span>
+                    <span :style="collapsed ? 'opacity:0;width:0;overflow:hidden;position:absolute' : 'opacity:1;width:auto;position:static'">Ver meu cartão</span>
+                    <span class="sidebar-tooltip">Ver meu cartão</span>
                 </a>
-
-                {{-- Botão recolher (só desktop) --}}
-                <button @click="toggleCollapse()"
-                        class="hidden md:flex items-center gap-2 rounded-lg text-xs text-white/50 hover:text-white hover:bg-white/10 transition-colors w-full"
-                        :class="collapsed ? 'justify-center w-10 h-10 mx-auto' : 'px-3 py-2'"
-                        :title="collapsed ? 'Expandir menu' : 'Recolher menu'">
-                    <i :data-lucide="collapsed ? 'panel-left-open' : 'panel-left-close'" class="w-3.5 h-3.5 shrink-0"></i>
-                    <span :style="collapsed ? 'display:none' : ''">Recolher</span>
-                </button>
             </div>
         </aside>
 
