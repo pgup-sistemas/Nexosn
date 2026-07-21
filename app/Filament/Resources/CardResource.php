@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CardResource\Pages;
+use App\Filament\Resources\CardResource\RelationManagers\ServicesRelationManager;
 use App\Models\Card;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class CardResource extends Resource
 {
@@ -86,9 +88,16 @@ class CardResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('user');
+    }
+
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ServicesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

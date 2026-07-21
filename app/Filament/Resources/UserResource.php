@@ -12,7 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
@@ -35,7 +37,16 @@ class UserResource extends Resource
                 ->required(),
             Forms\Components\DateTimePicker::make('plan_expires_at')->label('Pro expira em'),
             Forms\Components\DateTimePicker::make('trial_ends_at')->label('Trial expira em'),
+            Forms\Components\Toggle::make('is_admin')
+                ->label('Acesso ao painel admin')
+                ->helperText('Concede acesso ao /admin. Cuidado ao conceder para outros usuários.')
+                ->default(false),
         ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('card');
     }
 
     public static function table(Table $table): Table
@@ -66,6 +77,10 @@ class UserResource extends Resource
                     ->label('Slug')
                     ->url(fn ($record) => $record->card ? url('/u/' . $record->card->slug) : null)
                     ->openUrlInNewTab(),
+                Tables\Columns\IconColumn::make('is_admin')
+                    ->label('Admin')
+                    ->boolean()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y')
@@ -78,6 +93,8 @@ class UserResource extends Resource
                 Filter::make('trial_ativo')
                     ->label('Trial ativo')
                     ->query(fn ($query) => $query->whereNotNull('trial_ends_at')->where('trial_ends_at', '>', now())),
+                TernaryFilter::make('is_admin')
+                    ->label('Acesso admin'),
             ])
             ->actions([
                 Action::make('impersonar')
@@ -85,6 +102,7 @@ class UserResource extends Resource
                     ->icon('heroicon-o-arrow-right-on-rectangle')
                     ->color('warning')
                     ->requiresConfirmation()
+                    ->visible(fn (User $record) => $record->id !== Auth::id())
                     ->action(function (User $record) {
                         AuditLog::create([
                             'action'     => 'impersonation',
@@ -92,6 +110,7 @@ class UserResource extends Resource
                             'target_id'  => $record->id,
                             'ip_address' => request()->ip(),
                         ]);
+                        session(['impersonator_id' => Auth::id()]);
                         Auth::loginUsingId($record->id);
                         return redirect('/dashboard');
                     }),

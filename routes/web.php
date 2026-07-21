@@ -49,6 +49,15 @@ Route::post('logout', function () {
     return redirect('/');
 })->middleware('auth')->name('logout');
 
+// Retornar à conta de admin após impersonação
+Route::post('impersonate/stop', function () {
+    $adminId = session('impersonator_id');
+    abort_unless($adminId, 403);
+    session()->forget('impersonator_id');
+    Auth::loginUsingId($adminId);
+    return redirect('/admin');
+})->middleware('auth')->name('impersonate.stop');
+
 // Webhook Efi Bank (sem CSRF)
 Route::post('/webhook/efibank', [EfiBankWebhookController::class, 'handle'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])

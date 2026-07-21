@@ -71,6 +71,18 @@
          class="fixed inset-0 z-20 bg-black/50 md:hidden"
          @click="mobileOpen = false"></div>
 
+    @if (session('impersonator_id'))
+    <div class="sticky top-0 z-40 flex items-center justify-center gap-3 px-4 py-2 text-xs font-medium text-white"
+         style="background-color:#D62828;">
+        <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+        Você está navegando como <strong>{{ auth()->user()->name }}</strong>
+        <form method="POST" action="{{ route('impersonate.stop') }}" class="inline">
+            @csrf
+            <button class="underline hover:opacity-80">Voltar para admin</button>
+        </form>
+    </div>
+    @endif
+
     <div class="flex min-h-screen">
 
         {{-- ── SIDEBAR ── --}}
