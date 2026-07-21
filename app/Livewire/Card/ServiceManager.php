@@ -4,6 +4,7 @@ namespace App\Livewire\Card;
 
 use App\Models\Card;
 use App\Models\CardService;
+use App\Services\PlanService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -46,8 +47,20 @@ class ServiceManager extends Component
         $this->card = $card;
     }
 
+    public function canAddService(): bool
+    {
+        $user  = $this->card->user ?? Auth::user();
+        $count = $this->card->services()->count();
+        return app(PlanService::class)->withinLimit($user, 'services', $count);
+    }
+
     public function startCreate(): void
     {
+        if (! $this->canAddService()) {
+            session()->flash('erro', 'Limite de 3 serviços atingido no plano Free. Faça upgrade para Pro e cadastre serviços ilimitados.');
+            return;
+        }
+
         $this->resetForm();
         $this->showForm  = true;
         $this->editingId = null;
@@ -68,6 +81,12 @@ class ServiceManager extends Component
     public function save(): void
     {
         $this->validate();
+
+        if (! $this->editingId && ! $this->canAddService()) {
+            session()->flash('erro', 'Limite do plano Free atingido.');
+            $this->showForm = false;
+            return;
+        }
 
         $data = [
             'name'        => trim($this->name),

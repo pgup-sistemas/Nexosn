@@ -6,6 +6,27 @@
     </div>
     @endif
 
+    @if (session('erro'))
+    <div class="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 font-medium">
+        {{ session('erro') }}
+    </div>
+    @endif
+
+    {{-- Banner de limite Free --}}
+    @if (!$this->canAddService())
+    <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 flex items-start gap-3">
+        <i data-lucide="zap" class="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0"></i>
+        <div>
+            <p class="text-sm font-semibold text-amber-800">Limite de 3 serviços atingido</p>
+            <p class="text-xs text-amber-700 mt-0.5">Faça upgrade para o plano <strong>Pro</strong> e cadastre serviços ilimitados.</p>
+            <a href="{{ route('dashboard.plan') }}"
+               class="inline-block mt-2 text-xs font-semibold text-white bg-amber-500 hover:bg-amber-600 px-3 py-1.5 rounded-lg transition-colors">
+                Ver planos
+            </a>
+        </div>
+    </div>
+    @endif
+
     {{-- Aviso chave PIX --}}
     @if (!$card->pix_key)
     <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
