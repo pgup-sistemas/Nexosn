@@ -3,6 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CardResource\Pages;
+use App\Filament\Resources\CardResource\RelationManagers\LinksRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\PhotosRelationManager;
 use App\Filament\Resources\CardResource\RelationManagers\ServicesRelationManager;
 use App\Models\Card;
 use Filament\Forms;
@@ -96,6 +98,8 @@ class CardResource extends Resource
     public static function getRelations(): array
     {
         return [
+            LinksRelationManager::class,
+            PhotosRelationManager::class,
             ServicesRelationManager::class,
         ];
     }

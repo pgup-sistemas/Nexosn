@@ -2,9 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\CardAppointmentResource;
+use App\Filament\Resources\CardResource;
+use App\Filament\Resources\ContactMessageResource;
 use App\Models\AuditLog;
 use App\Models\Card;
 use App\Models\CardAppointment;
+use App\Models\CardLink;
+use App\Models\CardPhoto;
 use App\Models\CardSchedule;
 use App\Models\ContactMessage;
 use App\Models\User;
@@ -157,5 +162,100 @@ class AdminPanelTest extends TestCase
         $titular = $this->makeUserWithCard();
 
         $this->actingAs($titular)->post('/impersonate/stop')->assertForbidden();
+    }
+
+    // ── relation managers do cartão ─────────────────────────────────────────────
+
+    public function test_admin_acessa_tela_de_edicao_do_cartao_com_relation_managers(): void
+    {
+        $admin = $this->makeAdmin();
+        $titular = $this->makeUserWithCard();
+        CardLink::create([
+            'card_id' => $titular->card->id,
+            'label'   => 'Instagram',
+            'url'     => 'https://instagram.com/teste',
+            'order'   => 0,
+        ]);
+        CardPhoto::create([
+            'card_id' => $titular->card->id,
+            'path'    => 'photos/teste.jpg',
+            'order'   => 0,
+        ]);
+
+        $this->actingAs($admin)
+            ->get("/admin/cards/{$titular->card->id}/edit")
+            ->assertSuccessful();
+    }
+
+    // ── badges de navegação ──────────────────────────────────────────────────────
+
+    public function test_badge_de_mensagens_reflete_apenas_nao_lidas(): void
+    {
+        $titular = $this->makeUserWithCard();
+        ContactMessage::create([
+            'card_id'      => $titular->card->id,
+            'sender_name'  => 'Visitante 1',
+            'sender_email' => 'v1@teste.com',
+            'message'      => 'Mensagem não lida',
+        ]);
+        ContactMessage::create([
+            'card_id'      => $titular->card->id,
+            'sender_name'  => 'Visitante 2',
+            'sender_email' => 'v2@teste.com',
+            'message'      => 'Mensagem lida',
+            'read_at'      => now(),
+        ]);
+
+        $this->assertSame('1', ContactMessageResource::getNavigationBadge());
+    }
+
+    public function test_badge_de_mensagens_nulo_quando_tudo_lido(): void
+    {
+        $this->assertNull(ContactMessageResource::getNavigationBadge());
+    }
+
+    public function test_badge_de_agendamentos_reflete_apenas_pendentes(): void
+    {
+        $titular = $this->makeUserWithCard();
+        $schedule = CardSchedule::create([
+            'card_id'       => $titular->card->id,
+            'service_name'  => 'Consulta',
+            'slot_duration' => 30,
+            'is_active'     => true,
+        ]);
+        CardAppointment::create([
+            'card_schedule_id' => $schedule->id,
+            'visitor_name'     => 'Pendente',
+            'visitor_email'    => 'pendente@teste.com',
+            'appointment_date' => now()->addDay()->toDateString(),
+            'appointment_time' => '10:00',
+            'status'           => 'pending',
+            'token'            => 'token-1',
+        ]);
+        CardAppointment::create([
+            'card_schedule_id' => $schedule->id,
+            'visitor_name'     => 'Confirmado',
+            'visitor_email'    => 'confirmado@teste.com',
+            'appointment_date' => now()->addDay()->toDateString(),
+            'appointment_time' => '11:00',
+            'status'           => 'confirmed',
+            'token'            => 'token-2',
+        ]);
+
+        $this->assertSame('1', CardAppointmentResource::getNavigationBadge());
+    }
+
+    public function test_badge_de_agendamentos_nulo_sem_pendentes(): void
+    {
+        $this->assertNull(CardAppointmentResource::getNavigationBadge());
+    }
+
+    public function test_card_resource_expoe_relation_managers_de_links_fotos_e_servicos(): void
+    {
+        $relations = CardResource::getRelations();
+
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\LinksRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\PhotosRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\ServicesRelationManager::class, $relations);
     }
 }
