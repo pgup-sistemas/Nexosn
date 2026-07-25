@@ -19,7 +19,7 @@ class CardController extends Controller
 
         $referer = request()->header('referer', '');
         $card->views()->create([
-            'ip'         => request()->ip(),
+            'ip_hash'    => hash('sha256', request()->ip() . config('app.key')),
             'user_agent' => request()->userAgent(),
             'referer'    => $referer,
             'source'     => self::detectSource($referer),
@@ -39,7 +39,7 @@ class CardController extends Controller
         return redirect()->away($link->url);
     }
 
-    private static function detectSource(string $referer): string
+    public static function detectSource(string $referer): string
     {
         if (empty($referer)) return 'direct';
         $r = strtolower($referer);

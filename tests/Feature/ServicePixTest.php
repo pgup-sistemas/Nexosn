@@ -20,7 +20,11 @@ class ServicePixTest extends TestCase
 
     private function makeUser(string $plan = 'free'): User
     {
-        $user = User::factory()->create(['plan' => $plan]);
+        $attrs = ['plan' => $plan];
+        if ($plan === 'pro') {
+            $attrs['plan_expires_at'] = now()->addMonth();
+        }
+        $user = User::factory()->create($attrs);
         $user->card()->create([
             'slug'         => 'teste-' . $user->id,
             'display_name' => 'Titular Teste',
@@ -53,12 +57,14 @@ class ServicePixTest extends TestCase
         $this->assertFalse($ps->withinLimit($user, 'services', 3));
     }
 
-    public function test_pro_permite_servicos_ilimitados(): void
+    public function test_pro_permite_ate_20_servicos(): void
     {
         $ps   = app(PlanService::class);
-        $user = User::factory()->create(['plan' => 'pro']);
+        $user = User::factory()->create(['plan' => 'pro', 'plan_expires_at' => now()->addMonth()]);
 
-        $this->assertTrue($ps->withinLimit($user, 'services', 100));
+        $this->assertTrue($ps->withinLimit($user, 'services', 0));
+        $this->assertTrue($ps->withinLimit($user, 'services', 19));
+        $this->assertFalse($ps->withinLimit($user, 'services', 20));
     }
 
     // ── QrCodeService PIX payload ─────────────────────────────────────────────

@@ -416,7 +416,7 @@
     </p>
     <div class="social-track" id="nexosn-social-track">
         @foreach ($socialLinks as $link)
-        <a href="{{ $link->url }}" target="_blank" rel="noopener"
+        <a href="{{ route('card.link.click', [$card->slug, $link->id]) }}" target="_blank" rel="noopener"
            class="spill {{ $socialPillClass(strtolower($link->url)) }}">
             <i data-lucide="{{ $link->lucide_icon }}" style="width:15px;height:15px;color:rgba(255,255,255,.88);flex-shrink:0;"></i>
             <span class="spill-label">{{ $link->label }}</span>

@@ -58,12 +58,23 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     public function isPro(): bool
     {
-        return $this->plan === 'pro'
-            && ($this->plan_expires_at === null || $this->plan_expires_at->isFuture());
+        if ($this->plan !== 'pro') {
+            return false;
+        }
+
+        // Trial ativo (sem assinatura paga): verifica trial_ends_at
+        if ($this->plan_expires_at === null) {
+            return $this->trial_ends_at !== null && $this->trial_ends_at->isFuture();
+        }
+
+        // Assinatura paga: verifica plan_expires_at
+        return $this->plan_expires_at->isFuture();
     }
 
     public function isOnTrial(): bool
     {
-        return $this->trial_ends_at !== null && $this->trial_ends_at->isFuture();
+        return $this->trial_ends_at !== null
+            && $this->trial_ends_at->isFuture()
+            && $this->plan_expires_at === null; // trial ativo = sem assinatura paga
     }
 }

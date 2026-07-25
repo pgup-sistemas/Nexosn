@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CardView extends Model
 {
-    protected $fillable = ['card_id', 'ip', 'user_agent', 'referer', 'source'];
+    protected $fillable = ['card_id', 'ip_hash', 'user_agent', 'referer', 'source'];
 
     public function card(): BelongsTo
     {

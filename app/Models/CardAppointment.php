@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CardAppointment extends Model
 {
+    // status: pending | confirmed | refused | cancelled
     protected $fillable = [
         'card_schedule_id', 'visitor_name', 'visitor_email', 'visitor_phone',
         'appointment_date', 'appointment_time', 'status', 'token', 'notes', 'token_expires_at',

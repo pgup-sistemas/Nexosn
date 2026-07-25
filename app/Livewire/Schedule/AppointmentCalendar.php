@@ -42,10 +42,14 @@ class AppointmentCalendar extends Component
 
     public function prevMonth(): void
     {
-        $this->currentMonth = Carbon::parse($this->currentMonth . '-01')->subMonth()->format('Y-m');
-        $this->selectedDate = null;
-        $this->availableSlots = [];
-        $this->selectedTime = null;
+        $prev = Carbon::parse($this->currentMonth . '-01')->subMonth();
+        // Não permite navegar para meses anteriores ao mês atual
+        if ($prev->gte(now()->startOfMonth())) {
+            $this->currentMonth = $prev->format('Y-m');
+            $this->selectedDate = null;
+            $this->availableSlots = [];
+            $this->selectedTime = null;
+        }
     }
 
     public function nextMonth(): void

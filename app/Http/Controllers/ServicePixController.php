@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\CardController;
 use App\Models\Card;
 use App\Models\CardService;
 use App\Services\QrCodeService;
@@ -56,10 +57,20 @@ class ServicePixController extends Controller
 
         $card->load(['links', 'photos', 'schedule', 'services', 'user']);
 
+        // Registra view (mesmo fluxo do CardController::show)
+        $referer = request()->header('referer', '');
+        $card->views()->create([
+            'ip_hash'    => hash('sha256', request()->ip() . config('app.key')),
+            'user_agent' => request()->userAgent(),
+            'referer'    => $referer,
+            'source'     => CardController::detectSource($referer),
+        ]);
+
         return view('card.show', [
             'card'            => $card,
             'qrSvg'           => $this->qr->svg(url("/u/{$card->slug}")),
             'autoOpenService' => $service->id,
         ]);
     }
+
 }

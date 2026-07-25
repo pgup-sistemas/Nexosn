@@ -57,7 +57,7 @@ class ServiceManager extends Component
     public function startCreate(): void
     {
         if (! $this->canAddService()) {
-            session()->flash('erro', 'Limite de 3 serviços atingido no plano Free. Faça upgrade para Pro e cadastre serviços ilimitados.');
+            session()->flash('erro', 'Limite de serviços atingido. Faça upgrade para o plano Pro para cadastrar até 20 serviços.');
             return;
         }
 

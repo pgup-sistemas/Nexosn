@@ -53,6 +53,8 @@ class AppointmentController extends Controller
 
     public function slots(Request $request, string $slug)
     {
+        $request->validate(['date' => 'required|date_format:Y-m-d|after_or_equal:today']);
+
         $card = \App\Models\Card::where('slug', $slug)->where('is_active', true)->firstOrFail();
 
         $schedule = $card->schedule;
@@ -60,7 +62,7 @@ class AppointmentController extends Controller
             return response()->json([]);
         }
 
-        $date = \Carbon\Carbon::parse($request->input('date'));
+        $date = \Carbon\Carbon::createFromFormat('Y-m-d', $request->input('date'));
 
         return response()->json($this->service->availableSlots($schedule, $date));
     }

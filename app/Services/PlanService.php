@@ -10,7 +10,7 @@ class PlanService
 
     const LIMITS = [
         'free' => ['links' => 5,  'photos' => 3,  'services' => 3],
-        'pro'  => ['links' => -1, 'photos' => 30, 'services' => -1],
+        'pro'  => ['links' => -1, 'photos' => 30, 'services' => 20],
     ];
 
     public function activateTrial(User $user): void
