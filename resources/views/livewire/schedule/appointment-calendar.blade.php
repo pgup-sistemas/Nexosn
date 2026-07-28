@@ -81,6 +81,8 @@
 
     @else
 
+        @php $appointmentsByDay = $appointmentsByDay ?? []; @endphp
+
         {{-- Calendário --}}
         <div>
             {{-- Header do mês --}}
@@ -103,25 +105,78 @@
                 @endforeach
             </div>
 
+            {{-- Legenda --}}
+            <div class="flex items-center gap-3 mb-2 text-[10px] text-gray-500">
+                <span class="flex items-center gap-1">
+                    <span class="inline-block w-2 h-2 rounded-full bg-yellow-400"></span> Pendente
+                </span>
+                <span class="flex items-center gap-1">
+                    <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> Confirmado
+                </span>
+            </div>
+
             {{-- Dias --}}
             <div class="grid grid-cols-7 gap-0.5">
                 @foreach ($days as $day)
                     @if ($day === null)
                         <div></div>
-                    @elseif ($day['available'])
-                        <button wire:click="selectDate('{{ $day['date'] }}')"
-                                class="aspect-square flex items-center justify-center rounded-[8px] text-[13px] font-medium transition
-                                       {{ $selectedDate === $day['date'] ? 'text-white' : 'text-gray-800 hover:opacity-80' }}"
-                                style="{{ $selectedDate === $day['date'] ? 'background-color: var(--card-primary);' : 'background-color: color-mix(in srgb, var(--card-primary) 12%, white);' }}">
-                            {{ $day['day'] }}
-                        </button>
                     @else
-                        <div class="aspect-square flex items-center justify-center rounded-[8px] text-[13px] text-gray-300">
+                        @php
+                            $dayAppts = $appointmentsByDay[$day['date']] ?? [];
+                            $hasPending   = collect($dayAppts)->where('status', 'pending')->count() > 0;
+                            $hasConfirmed = collect($dayAppts)->where('status', 'confirmed')->count() > 0;
+                            $isSelected   = $selectedDate === $day['date'];
+                        @endphp
+
+                        @if ($day['available'])
+                        <button wire:click="selectDate('{{ $day['date'] }}')"
+                                class="relative flex flex-col items-center justify-center rounded-[8px] text-[12px] font-medium transition py-1 min-h-[38px]
+                                       {{ $isSelected ? 'text-white' : 'text-gray-800 hover:opacity-80' }}"
+                                style="{{ $isSelected ? 'background-color: var(--card-primary);' : 'background-color: color-mix(in srgb, var(--card-primary) 12%, white);' }}">
                             {{ $day['day'] }}
+                            @if ($hasPending || $hasConfirmed)
+                            <div class="flex gap-0.5 mt-0.5">
+                                @if ($hasConfirmed)
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                                @endif
+                                @if ($hasPending)
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                                @endif
+                            </div>
+                            @endif
+                        </button>
+                        @else
+                        <div class="relative flex flex-col items-center justify-center rounded-[8px] text-[12px] text-gray-300 py-1 min-h-[38px]">
+                            {{ $day['day'] }}
+                            @if ($hasPending || $hasConfirmed)
+                            <div class="flex gap-0.5 mt-0.5">
+                                @if ($hasConfirmed)
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-400 opacity-60"></span>
+                                @endif
+                                @if ($hasPending)
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-yellow-300 opacity-60"></span>
+                                @endif
+                            </div>
+                            @endif
                         </div>
+                        @endif
                     @endif
                 @endforeach
             </div>
+
+            {{-- Lista de agendamentos do dia selecionado --}}
+            @if ($selectedDate && !empty($appointmentsByDay[$selectedDate]))
+            <div class="mt-3 rounded-[10px] border border-gray-100 overflow-hidden">
+                @foreach ($appointmentsByDay[$selectedDate] as $appt)
+                <div class="flex items-center gap-2 px-3 py-2 text-[12px] border-b border-gray-50 last:border-0 bg-white">
+                    <span class="inline-block w-2 h-2 rounded-full flex-shrink-0
+                        {{ $appt['status'] === 'confirmed' ? 'bg-green-500' : 'bg-yellow-400' }}"></span>
+                    <span class="font-medium text-gray-700 flex-1 truncate">{{ $appt['name'] }}</span>
+                    <span class="text-gray-400 flex-shrink-0">{{ $appt['time'] }}</span>
+                </div>
+                @endforeach
+            </div>
+            @endif
 
             {{-- Slots do dia selecionado --}}
             @if ($selectedDate)

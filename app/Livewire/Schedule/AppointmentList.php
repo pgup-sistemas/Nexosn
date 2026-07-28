@@ -6,6 +6,7 @@ use App\Mail\AppointmentConfirmedMail;
 use App\Mail\AppointmentRefusedMail;
 use App\Models\CardAppointment;
 use App\Services\AppointmentService;
+use App\Services\GoogleCalendarService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Mail;
@@ -24,7 +25,10 @@ class AppointmentList extends Component
         app(AppointmentService::class)->confirm($appointment);
         Mail::to($appointment->visitor_email)->send(new AppointmentConfirmedMail($appointment));
 
-        session()->flash('sucesso', 'Agendamento confirmado!');
+        // Cria evento no Google Calendar do titular (se conectado)
+        app(GoogleCalendarService::class)->createEvent(auth()->user(), $appointment);
+
+        session()->flash('sucesso', 'Agendamento confirmado! Evento criado no Google Calendar. ✅');
     }
 
     public function refuse(int $id): void
@@ -34,6 +38,9 @@ class AppointmentList extends Component
 
         app(AppointmentService::class)->refuse($appointment);
         Mail::to($appointment->visitor_email)->send(new AppointmentRefusedMail($appointment));
+
+        // Remove evento do Google Calendar se existir
+        app(GoogleCalendarService::class)->deleteEvent(auth()->user(), $appointment);
 
         session()->flash('sucesso', 'Agendamento recusado.');
     }

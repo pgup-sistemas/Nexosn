@@ -706,9 +706,50 @@ a { text-decoration: none; }
     margin-top: 12px;
 }
 
+/* ---- HAMBÚRGUER ---- */
+.nav-hamburger {
+    display: none;
+    flex-direction: column; justify-content: center; align-items: center;
+    gap: 5px; width: 40px; height: 40px; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    background: transparent; padding: 0;
+}
+.nav-hamburger span {
+    display: block; width: 20px; height: 2px;
+    background: #fff; border-radius: 2px;
+    transition: all .25s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-mobile-menu {
+    display: none;
+    position: absolute; top: 64px; left: 0; right: 0;
+    background: rgba(0,48,73,0.98);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 16px 24px 20px;
+    flex-direction: column; gap: 10px;
+    z-index: 49;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+    display: block; padding: 12px 16px; border-radius: 10px;
+    font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+}
+.nav-mobile-menu a.cta {
+    background: #D62828; color: #fff;
+    border-color: #D62828; font-weight: 700;
+}
+
 /* ---- RESPONSIVE ---- */
 @media(max-width: 640px) {
     .navbar-brand { font-size: 18px; }
+    .navbar-links { display: none; }
+    .nav-hamburger { display: flex; }
     .hero { padding: 60px 16px 0; }
     .section { padding: 60px 16px; }
     .hero-stats { gap: 24px; }
@@ -719,7 +760,7 @@ a { text-decoration: none; }
 <body>
 
 <!-- ═══ NAVBAR ═══ -->
-<nav class="navbar">
+<nav class="navbar" style="position:relative;">
     <div class="navbar-brand">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="color:#FCBF49">
             <line x1="5" y1="5"  x2="5"  y2="19" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/>
@@ -732,8 +773,9 @@ a { text-decoration: none; }
         </svg>
         NEX<span style="opacity:.55;">OSN</span><span>.</span>
     </div>
+
+    {{-- Desktop --}}
     <div class="navbar-links">
-        <a href="#funcionalidades" class="btn-nav-ghost" style="display:none" id="nav-links-desktop">Funcionalidades</a>
         <a href="#planos" class="btn-nav-ghost">Planos</a>
         @if (Route::has('login'))
             @auth
@@ -744,13 +786,44 @@ a { text-decoration: none; }
             @endauth
         @endif
     </div>
+
+    {{-- Hambúrguer mobile --}}
+    <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+    </button>
 </nav>
+
+{{-- Menu mobile dropdown --}}
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+    <a href="#planos" onclick="fecharMenu()">Planos</a>
+    @if (Route::has('login'))
+        @auth
+        <a href="/dashboard">Painel</a>
+        @else
+        <a href="{{ route('login') }}">Entrar</a>
+        <a href="{{ route('register') }}" class="cta">Criar grátis</a>
+        @endauth
+    @endif
+</div>
+
+<script>
+const btn  = document.getElementById('nav-hamburger');
+const menu = document.getElementById('nav-mobile-menu');
+btn.addEventListener('click', () => {
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+});
+function fecharMenu() {
+    btn.classList.remove('open');
+    menu.classList.remove('open');
+}
+</script>
 
 <!-- ═══ HERO ═══ -->
 <section class="hero">
     <div class="hero-badge">
         <svg data-lucide="sparkles" style="width:12px;height:12px;"></svg>
-        Novo · Agenda integrada
+        Novo · Agenda + Google Calendar integrados
     </div>
 
     <h1>Sua identidade digital<br><em>única e profissional</em></h1>
@@ -855,6 +928,18 @@ a { text-decoration: none; }
                     <div class="mk-stat-num" style="color:#F77F00;">3</div>
                     <div class="mk-stat-lbl">Pendentes</div>
                 </div>
+            </div>
+            <!-- Google Calendar chip -->
+            <div style="padding:8px 14px 12px;display:flex;align-items:center;gap:6px;border-top:1px solid #f0f0ee;">
+                <svg viewBox="0 0 18 18" width="14" height="14" fill="none">
+                    <rect x="1" y="2" width="16" height="15" rx="2" fill="#1a73e8"/>
+                    <path d="M1 6h16" stroke="#fff" stroke-width="1.2"/>
+                    <rect x="5" y="9" width="2.5" height="2.5" rx=".5" fill="#FCBF49"/>
+                    <rect x="10" y="9" width="2.5" height="2.5" rx=".5" fill="#fff" opacity=".7"/>
+                    <rect x="5" y="13" width="2.5" height="2" rx=".5" fill="#fff" opacity=".7"/>
+                    <path d="M6 1v3M12 1v3" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <span style="font-size:9px;font-weight:700;color:#1a73e8;">Google Calendar sincronizado</span>
             </div>
         </div>
 
@@ -1428,6 +1513,81 @@ a { text-decoration: none; }
                 <p>Acompanhe quantas vezes seu perfil foi visualizado, quais links foram clicados e muito mais no painel de controle.</p>
             </div>
 
+            {{-- ── CARD LARGO: Google Calendar ── --}}
+            <div class="feature-card" style="background:linear-gradient(135deg,#1a73e8,#4285f4);color:#fff;grid-column:1/-1;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:rgba(255,255,255,0.06);border-radius:50%;pointer-events:none;"></div>
+                <div style="position:absolute;bottom:-50px;right:80px;width:240px;height:240px;background:rgba(255,255,255,0.04);border-radius:50%;pointer-events:none;"></div>
+                <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:240px;">
+                        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:100px;padding:4px 12px;margin-bottom:16px;">
+                            <svg data-lucide="sparkles" style="width:12px;height:12px;color:#FCBF49;"></svg>
+                            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#fff;">Novo · Integração</span>
+                        </div>
+                        <div class="feature-card-icon" style="background:rgba(255,255,255,0.15);">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none">
+                                <rect x="3" y="4" width="18" height="17" rx="2" stroke="#fff" stroke-width="1.8"/>
+                                <path d="M3 9h18" stroke="#fff" stroke-width="1.8"/>
+                                <path d="M8 2v3M16 2v3" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+                                <circle cx="8" cy="14" r="1.2" fill="#FCBF49"/>
+                                <circle cx="12" cy="14" r="1.2" fill="#FCBF49"/>
+                                <circle cx="16" cy="14" r="1.2" fill="#FCBF49"/>
+                                <circle cx="8" cy="18" r="1.2" fill="rgba(255,255,255,.6)"/>
+                                <circle cx="12" cy="18" r="1.2" fill="rgba(255,255,255,.6)"/>
+                            </svg>
+                        </div>
+                        <h3 style="font-size:22px;">Agenda integrada com Google Calendar</h3>
+                        <p style="font-size:15px;line-height:1.7;max-width:480px;">Conecte sua conta Google e, ao confirmar um agendamento, o evento é criado automaticamente no seu Google Calendar — com lembrete no smartphone e convite para o visitante.</p>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;min-width:220px;align-self:center;">
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="bell" style="width:16px;height:16px;color:#FCBF49;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;">Lembrete automático no celular antes do atendimento</span>
+                        </div>
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="mail" style="width:16px;height:16px;color:#FCBF49;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;">Visitante recebe convite Google Calendar por e-mail</span>
+                        </div>
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="refresh-cw" style="width:16px;height:16px;color:#FCBF49;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;">Sincronização automática — sem precisar abrir o sistema</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- ── CARD LARGO: PIX Dinâmico ── --}}
+            <div class="feature-card" style="background:linear-gradient(135deg,#F77F00,#FCBF49);color:#003049;grid-column:1/-1;position:relative;overflow:hidden;">
+                <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,0.1);border-radius:50%;pointer-events:none;"></div>
+                <div style="position:absolute;bottom:-60px;left:40px;width:200px;height:200px;background:rgba(0,0,0,0.05);border-radius:50%;pointer-events:none;"></div>
+                <div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+                    <div style="flex:1;min-width:240px;">
+                        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,48,73,0.12);border:1px solid rgba(0,48,73,0.2);border-radius:100px;padding:4px 12px;margin-bottom:16px;">
+                            <svg data-lucide="sparkles" style="width:12px;height:12px;color:#003049;"></svg>
+                            <span style="font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#003049;">Novo · PIX Dinâmico</span>
+                        </div>
+                        <div class="feature-card-icon" style="background:rgba(0,48,73,0.12);">
+                            <svg data-lucide="qr-code" style="width:24px;height:24px;color:#003049;"></svg>
+                        </div>
+                        <h3 style="font-size:22px;">PIX com valor livre — gerado na hora</h3>
+                        <p style="font-size:15px;line-height:1.7;max-width:480px;color:rgba(0,48,73,0.85);">O visitante digita o valor que deseja pagar e o QR Code PIX é gerado instantaneamente no perfil — sem aplicativo, sem integração bancária, sem complicação. Funciona com qualquer chave PIX.</p>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:10px;min-width:220px;align-self:center;">
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(0,48,73,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="zap" style="width:16px;height:16px;color:#003049;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;color:rgba(0,48,73,0.9);">QR Code gerado em menos de 1 segundo</span>
+                        </div>
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(0,48,73,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="copy" style="width:16px;height:16px;color:#003049;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;color:rgba(0,48,73,0.9);">Pix copia e cola incluso — paga em qualquer banco</span>
+                        </div>
+                        <div style="display:flex;align-items:flex-start;gap:10px;background:rgba(0,48,73,0.1);border-radius:12px;padding:12px 14px;">
+                            <svg data-lucide="shield-check" style="width:16px;height:16px;color:#003049;flex-shrink:0;margin-top:1px;"></svg>
+                            <span style="font-size:13px;line-height:1.5;color:rgba(0,48,73,0.9);">Padrão EMV BR Code — validado pelo Banco Central</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
@@ -1984,6 +2144,14 @@ a { text-decoration: none; }
                         <td class="cmp-val"><span class="cv cv-n">—</span></td>
                         <td class="cmp-val"><span class="cv cv-n">—</span></td>
                     </tr>
+                    <tr>
+                        <td>Integração com Google Calendar</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
 
                     <tr class="cmp-cat"><td colspan="6">Pagamentos &amp; Mercado BR</td></tr>
                     <tr>
@@ -1995,7 +2163,15 @@ a { text-decoration: none; }
                         <td class="cmp-val"><span class="cv cv-n">—</span></td>
                     </tr>
                     <tr>
-                        <td>Catálogo de serviços com PIX dinâmico por item</td>
+                        <td>PIX dinâmico — visitante digita o valor</td>
+                        <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">BR único</span></span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                        <td class="cmp-val"><span class="cv cv-n">—</span></td>
+                    </tr>
+                    <tr>
+                        <td>Catálogo de serviços com PIX por item</td>
                         <td class="cmp-val cmp-us"><span class="cv cv-y cv-u">✓ <span class="badge-uniq">BR único</span></span></td>
                         <td class="cmp-val"><span class="cv cv-n">—</span></td>
                         <td class="cmp-val"><span class="cv cv-n">—</span></td>
@@ -2163,7 +2339,7 @@ a { text-decoration: none; }
         </div>
 
         <div class="footer-bottom">
-            <p>© {{ date('Y') }} NEXOSN · PageUp Sistemas · Porto Velho, RO · CNPJ 00.000.000/0001-00</p>
+            <p>© {{ date('Y') }} NEXOSN · PageUp Sistemas · Porto Velho, RO · Desenvolvido por Oézios Normando</p>
             <div class="footer-bottom-links">
                 <a href="{{ route('legal.privacidade') }}">Privacidade</a>
                 <a href="{{ route('legal.cookies') }}">Cookies</a>

@@ -4,6 +4,7 @@ namespace App\Livewire\Schedule;
 
 use App\Jobs\SendAppointmentNotification;
 use App\Models\Card;
+use App\Models\CardAppointment;
 use App\Models\CardSchedule;
 use App\Services\AppointmentService;
 use Carbon\Carbon;
@@ -157,11 +158,41 @@ class AppointmentCalendar extends Component
         return $days;
     }
 
+    // Agendamentos do mês agrupados por data (pending + confirmed)
+    public function getAppointmentsByDay(): array
+    {
+        $start = Carbon::parse($this->currentMonth . '-01')->startOfMonth();
+        $end   = $start->copy()->endOfMonth();
+
+        $scheduleId = $this->card->schedule?->id;
+        if (!$scheduleId) return [];
+
+        $appointments = CardAppointment::where('card_schedule_id', $scheduleId)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->whereBetween('appointment_date', [$start->toDateString(), $end->toDateString()])
+            ->orderBy('appointment_time')
+            ->get(['appointment_date', 'appointment_time', 'visitor_name', 'status']);
+
+        $grouped = [];
+        foreach ($appointments as $appt) {
+            $dateKey = $appt->appointment_date instanceof \Carbon\Carbon
+                ? $appt->appointment_date->toDateString()
+                : (string) $appt->appointment_date;
+            $grouped[$dateKey][] = [
+                'time'   => substr((string) $appt->appointment_time, 0, 5),
+                'name'   => $appt->visitor_name,
+                'status' => $appt->status,
+            ];
+        }
+        return $grouped;
+    }
+
     public function render()
     {
         return view('livewire.schedule.appointment-calendar', [
-            'days'        => $this->getDaysInMonth(),
-            'monthLabel'  => Carbon::parse($this->currentMonth . '-01')->locale('pt_BR')->isoFormat('MMMM [de] YYYY'),
+            'days'            => $this->getDaysInMonth(),
+            'monthLabel'      => Carbon::parse($this->currentMonth . '-01')->locale('pt_BR')->isoFormat('MMMM [de] YYYY'),
+            'appointmentsByDay' => $this->getAppointmentsByDay(),
         ]);
     }
 }

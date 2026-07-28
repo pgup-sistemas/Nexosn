@@ -11,6 +11,7 @@ class CardAppointment extends Model
     protected $fillable = [
         'card_schedule_id', 'visitor_name', 'visitor_email', 'visitor_phone',
         'appointment_date', 'appointment_time', 'status', 'token', 'notes', 'token_expires_at',
+        'google_event_id',
     ];
 
     protected $casts = [

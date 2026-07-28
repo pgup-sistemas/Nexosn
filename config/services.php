@@ -35,11 +35,18 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id'     => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect'      => env('GOOGLE_REDIRECT_URI', 'https://nexosn.pageup.net.br/dashboard/google/callback'),
+    ],
+
     'efibank' => [
         'client_id'          => env('EFI_CLIENT_ID'),
         'client_secret'      => env('EFI_CLIENT_SECRET'),
         'certificate'        => env('EFI_CERTIFICATE_PATH'),
         'certificate_pwd'    => env('EFI_CERTIFICATE_PASSWORD', ''),
+        'sandbox'            => env('EFI_SANDBOX', true),
         'plan_id_monthly'    => env('EFI_PLAN_ID_MONTHLY'),
         'plan_id_annual'     => env('EFI_PLAN_ID_ANNUAL'),
     ],

@@ -39,6 +39,8 @@ class Configuracoes extends Page implements HasForms
     public string $app_url             = '';
 
     public bool   $efi_sandbox         = true;
+    public string $efi_plan_id_monthly  = '';
+    public string $efi_plan_id_annual   = '';
 
     public string $terms_version       = '';
     public string $terms_updated_at    = '';
@@ -52,7 +54,8 @@ class Configuracoes extends Page implements HasForms
             'plan_price_monthly', 'trial_days', 'limit_free_links',
             'limit_free_photos', 'limit_free_services', 'maintenance_mode',
             'support_email', 'mail_from_address', 'mail_from_name', 'app_url',
-            'efi_sandbox', 'terms_version', 'terms_updated_at', 'cookie_banner_text',
+            'efi_sandbox', 'efi_plan_id_monthly', 'efi_plan_id_annual',
+            'terms_version', 'terms_updated_at', 'cookie_banner_text',
         ];
 
         foreach ($keys as $key) {
@@ -126,13 +129,25 @@ class Configuracoes extends Page implements HasForms
                     ]),
 
                 // ── Integrações ───────────────────────────────────────────────
-                Section::make('Integrações')
-                    ->description('Credenciais ficam no .env — aqui apenas parâmetros de comportamento')
+                Section::make('Integrações — Efi Bank')
+                    ->description('Credenciais ficam no .env — aqui apenas parâmetros e IDs de plano')
                     ->icon('heroicon-o-puzzle-piece')
+                    ->columns(2)
                     ->schema([
                         Toggle::make('efi_sandbox')
-                            ->label('Efi Bank: modo sandbox (homologação)')
-                            ->helperText('Desative somente em produção com credenciais reais'),
+                            ->label('Modo sandbox (homologação)')
+                            ->helperText('Desative somente em produção com credenciais reais')
+                            ->columnSpanFull(),
+
+                        TextInput::make('efi_plan_id_monthly')
+                            ->label('Plan ID — Mensal')
+                            ->helperText('Gerado por: php artisan efibank:setup-plans')
+                            ->placeholder('Ex: 1234'),
+
+                        TextInput::make('efi_plan_id_annual')
+                            ->label('Plan ID — Anual')
+                            ->helperText('Gerado por: php artisan efibank:setup-plans')
+                            ->placeholder('Ex: 1235'),
                     ]),
 
                 // ── Legal ─────────────────────────────────────────────────────

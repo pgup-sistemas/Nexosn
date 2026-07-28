@@ -27,6 +27,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         'trial_ends_at',
         'terms_accepted_at',
         'efi_subscription_id',
+        'google_calendar_token',
     ];
 
     protected $hidden = [
@@ -40,9 +41,10 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
             'email_verified_at'  => 'datetime',
             'plan_expires_at'    => 'datetime',
             'trial_ends_at'      => 'datetime',
-            'is_admin'           => 'boolean',
-            'terms_accepted_at'  => 'datetime',
-            'password'          => 'hashed',
+            'is_admin'               => 'boolean',
+            'terms_accepted_at'      => 'datetime',
+            'password'               => 'hashed',
+            'google_calendar_token'  => 'array',
         ];
     }
 

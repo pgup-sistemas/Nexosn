@@ -90,7 +90,7 @@
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Tudo do Free</li>
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Links ilimitados</li>
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>30 fotos na galeria</li>
-                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Serviços com PIX dinâmico ilimitados</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Até 20 serviços com PIX dinâmico</li>
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Cores de marca personalizadas</li>
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Agenda com confirmação manual</li>
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Sem marca d'água</li>

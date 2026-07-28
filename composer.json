@@ -9,6 +9,7 @@
         "php": "^8.2",
         "efipay/sdk-php-apis-efi": "^1.19",
         "filament/filament": "^3.3",
+        "google/apiclient": "^2.15",
         "intervention/image": "^3.0",
         "intervention/image-laravel": "^1.5",
         "laravel/breeze": "^2.4",

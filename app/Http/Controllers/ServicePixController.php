@@ -7,11 +7,40 @@ use App\Models\Card;
 use App\Models\CardService;
 use App\Services\QrCodeService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ServicePixController extends Controller
 {
     public function __construct(private QrCodeService $qr) {}
+
+    public function pixDinamico(Request $request, Card $card): JsonResponse
+    {
+        abort_unless($card->is_active && $card->pix_key, 422, 'Titular sem chave PIX cadastrada.');
+
+        $amount = $request->validate([
+            'amount' => ['required', 'numeric', 'min:0.01', 'max:9999.99'],
+        ])['amount'];
+
+        $city = 'Brasil';
+        if ($card->address) {
+            $city = trim(explode(',', $card->address)[0]);
+        }
+
+        $payload = $this->qr->pixPayload(
+            pixKey:       $card->pix_key,
+            amount:       (float) $amount,
+            merchantName: $card->display_name,
+            city:         $city,
+            txid:         'PIX' . time(),
+        );
+
+        return response()->json([
+            'payload'   => $payload,
+            'qr_svg'    => $this->qr->svg($payload, 220),
+            'formatted' => 'R$ ' . number_format((float) $amount, 2, ',', '.'),
+        ]);
+    }
 
     /**
      * Retorna payload PIX + QR SVG para uso no modal (fetch assíncrono).

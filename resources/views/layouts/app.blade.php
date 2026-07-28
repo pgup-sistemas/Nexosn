@@ -159,12 +159,11 @@
                 @foreach ($navItems as $item)
                 @php $isActive = request()->routeIs($item['routeIs']); @endphp
                 <a href="{{ route($item['route']) }}" wire:navigate
-                   class="relative flex items-center gap-3 rounded-lg text-sm font-medium transition-colors group mb-0.5"
+                   class="relative flex items-center gap-3 rounded-lg text-sm font-medium group mb-0.5"
                    :class="collapsed ? 'justify-center mx-auto' : 'px-3 py-2 mx-0'"
-                   :style="collapsed ? 'width:40px;height:40px;' : ''"
-                   style="{{ $isActive ? 'background:rgba(255,255,255,.15);color:#fff;' : 'color:rgba(255,255,255,.65);' }}"
-                   @mouseenter="$el.style.color='#fff'; if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='rgba(255,255,255,.08)'"
-                   @mouseleave="$el.style.color='{{ $isActive ? '#fff' : 'rgba(255,255,255,.65)' }}'; if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='transparent'">
+                   :style="collapsed ? 'width:40px;height:40px;color:#fff;{{ $isActive ? 'background:rgba(255,255,255,.15);' : '' }}' : 'color:#fff;{{ $isActive ? 'background:rgba(255,255,255,.15);' : '' }}'"
+                   @mouseenter="if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='rgba(255,255,255,.12)'"
+                   @mouseleave="if(!{{ $isActive ? 'true' : 'false' }}) $el.style.background='transparent'">
 
                     <i data-lucide="{{ $item['icon'] }}" class="w-[18px] h-[18px] shrink-0"></i>
 

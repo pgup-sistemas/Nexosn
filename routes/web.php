@@ -4,6 +4,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\ServicePixController;
 use App\Http\Controllers\Dashboard\CheckoutController;
+use App\Http\Controllers\Dashboard\GoogleCalendarController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\EfiBankWebhookController;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings');
         Route::delete('settings/account', [SettingsController::class, 'destroyAccount'])->name('settings.account.destroy');
         Route::get('checkout/{type}', [CheckoutController::class, 'redirect'])->name('checkout');
+
+        // Google Calendar OAuth
+        Route::get('google/connect',    [GoogleCalendarController::class, 'redirect'])->name('google.connect');
+        Route::get('google/callback',   [GoogleCalendarController::class, 'callback'])->name('google.callback');
+        Route::post('google/disconnect',[GoogleCalendarController::class, 'disconnect'])->name('google.disconnect');
     });
 });
 
@@ -76,5 +82,6 @@ Route::get('/u/{slug}/agendar/slots', [AppointmentController::class, 'slots'])->
 Route::get('/u/{slug}/link/{linkId}', [CardController::class, 'trackClick'])->name('card.link.click');
 Route::get('/u/{card:slug}/servico/{service}/payload', [ServicePixController::class, 'payload'])->name('card.service.payload');
 Route::get('/u/{slug}/pagar/{service}', [ServicePixController::class, 'show'])->name('card.service.pay');
+Route::get('/u/{card:slug}/pix/payload', [ServicePixController::class, 'pixDinamico'])->name('card.pix.dinamico');
 
 require __DIR__.'/auth.php';

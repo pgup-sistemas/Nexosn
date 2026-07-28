@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AppSetting;
 use App\Services\EfiBankService;
 use Illuminate\Console\Command;
 use Throwable;
@@ -31,13 +32,21 @@ class EfiBankSetupPlans extends Command
             $this->line('  plan_id: ' . ($annualId ?? '(não retornado — veja a resposta completa abaixo)'));
 
             $this->newLine();
-            $this->info('Adicione ao .env:');
-            $this->line("EFI_PLAN_ID_MONTHLY={$monthlyId}");
-            $this->line("EFI_PLAN_ID_ANNUAL={$annualId}");
+            if ($monthlyId && $annualId) {
+                $this->info("Plan IDs gerados: mensal={$monthlyId}  anual={$annualId}");
 
-            if (!$monthlyId || !$annualId) {
-                $this->newLine();
-                $this->warn('Resposta completa da API (para localizar o plan_id manualmente):');
+                try {
+                    AppSetting::set('efi_plan_id_monthly', (string) $monthlyId);
+                    AppSetting::set('efi_plan_id_annual', (string) $annualId);
+                    $this->info('IDs salvos em Admin → Configurações (AppSetting).');
+                } catch (Throwable $dbEx) {
+                    $this->warn('Não foi possível salvar no banco: ' . $dbEx->getMessage());
+                    $this->info('Adicione manualmente ao .env (ou via Admin → Configurações):');
+                    $this->line("  EFI_PLAN_ID_MONTHLY={$monthlyId}");
+                    $this->line("  EFI_PLAN_ID_ANNUAL={$annualId}");
+                }
+            } else {
+                $this->warn('Não foi possível extrair os plan_ids. Resposta completa:');
                 $this->line(json_encode(['monthly' => $monthly, 'annual' => $annual], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
         } catch (Throwable $e) {

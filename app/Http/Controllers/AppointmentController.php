@@ -6,12 +6,16 @@ use App\Mail\AppointmentConfirmedMail;
 use App\Mail\AppointmentRefusedMail;
 use App\Models\CardAppointment;
 use App\Services\AppointmentService;
+use App\Services\GoogleCalendarService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class AppointmentController extends Controller
 {
-    public function __construct(private AppointmentService $service) {}
+    public function __construct(
+        private AppointmentService $service,
+        private GoogleCalendarService $google,
+    ) {}
 
     public function confirm(string $token)
     {
@@ -28,6 +32,10 @@ class AppointmentController extends Controller
         $this->service->confirm($appointment);
 
         Mail::to($appointment->visitor_email)->send(new AppointmentConfirmedMail($appointment));
+
+        // Cria evento no Google Calendar do titular (se conectado)
+        $titular = $appointment->schedule->card->user;
+        $this->google->createEvent($titular, $appointment);
 
         return view('appointments.confirmed', compact('appointment'));
     }
@@ -47,6 +55,10 @@ class AppointmentController extends Controller
         $this->service->refuse($appointment);
 
         Mail::to($appointment->visitor_email)->send(new AppointmentRefusedMail($appointment));
+
+        // Remove evento do Google Calendar se existir
+        $titular = $appointment->schedule->card->user;
+        $this->google->deleteEvent($titular, $appointment);
 
         return view('appointments.refused', compact('appointment'));
     }

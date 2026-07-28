@@ -369,12 +369,12 @@
 
     {{-- Barra de ação — ícones circulares + label --}}
     <div class="action-bar">
-        <button type="button" onclick="nexosnDownloadVCard()" class="action-icon-btn">
+        <a href="{{ route('card.vcard', $card->slug) }}" class="action-icon-btn" style="text-decoration:none;">
             <div class="action-icon-circle action-icon-circle-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
             </div>
             <span class="action-icon-label">Salvar<br>contato</span>
-        </button>
+        </a>
         <button type="button" onclick="nexosnShareNative()" class="action-icon-btn">
             <div class="action-icon-circle action-icon-circle-ghost">
                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
@@ -612,21 +612,135 @@ function compartilharLocalizacao() {
 
 {{-- ── PIX ── --}}
 @if ($card->pix_key)
-<button type="button" onclick="copiarPix()" class="abtn abtn-pix" style="border-radius:16px;">
+<button type="button" onclick="pixDinamicoModal.open()" class="abtn abtn-pix" style="border-radius:16px;">
     <i data-lucide="qr-code" style="width:17px;height:17px;opacity:.75;"></i>
     Pagar via PIX
 </button>
-<div id="pix-copiado" style="display:none;text-align:center;font-size:12px;color:#16a34a;font-weight:600;margin-top:-2px;margin-bottom:2px;">
-    ✓ Chave PIX copiada!
+
+{{-- Modal PIX dinâmico --}}
+<div id="pix-din-overlay" class="pix-modal-overlay" onclick="pixDinamicoModal.close()"></div>
+<div id="pix-din-sheet" class="pix-modal-sheet" role="dialog" aria-modal="true">
+    <div class="pix-modal-handle"></div>
+    <div id="pix-din-body">
+        <p class="pix-modal-title">Pagar via PIX</p>
+        <p style="font-size:12px;color:#9ca3af;text-align:center;margin-bottom:16px;">
+            Digite o valor que deseja pagar
+        </p>
+        <div style="position:relative;margin-bottom:16px;">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:700;color:#374151;">R$</span>
+            <input type="number" id="pix-din-valor" min="0.01" max="9999.99" step="0.01"
+                   placeholder="0,00"
+                   style="width:100%;padding:14px 14px 14px 42px;border:2px solid #e5e7eb;border-radius:14px;
+                          font-size:20px;font-weight:700;color:#111827;outline:none;box-sizing:border-box;
+                          -moz-appearance:textfield;"
+                   oninput="this.style.borderColor='#e5e7eb';document.getElementById('pix-din-erro').textContent=''"
+                   onkeydown="if(event.key==='Enter') pixDinamicoModal.gerar()">
+        </div>
+        <p id="pix-din-erro" style="color:#ef4444;font-size:12px;text-align:center;min-height:16px;margin-bottom:8px;"></p>
+        <button onclick="pixDinamicoModal.gerar()"
+                style="width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;
+                       color:#fff;cursor:pointer;background:var(--card-button, #F77F00);">
+            Gerar QR PIX
+        </button>
+        <button onclick="pixDinamicoModal.close()"
+                style="display:block;width:100%;margin-top:10px;padding:12px;border:none;
+                       background:#f3f4f6;border-radius:14px;font-size:13px;font-weight:600;
+                       color:#6b7280;cursor:pointer;">
+            Fechar
+        </button>
+    </div>
 </div>
+
 <script>
-function copiarPix() {
-    navigator.clipboard.writeText('{{ $card->pix_key }}').then(() => {
-        const el = document.getElementById('pix-copiado');
-        el.style.display = 'block';
-        setTimeout(() => el.style.display = 'none', 3000);
-    });
-}
+(function () {
+    const slug    = '{{ $card->slug }}';
+    const overlay = document.getElementById('pix-din-overlay');
+    const sheet   = document.getElementById('pix-din-sheet');
+    const body    = document.getElementById('pix-din-body');
+
+    window.pixDinamicoModal = {
+        open() {
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            requestAnimationFrame(() => sheet.classList.add('open'));
+            setTimeout(() => { const v = document.getElementById('pix-din-valor'); if(v) v.focus(); }, 350);
+        },
+        close() {
+            sheet.classList.remove('open');
+            overlay.style.display = 'none';
+            document.body.style.overflow = '';
+            setTimeout(() => this.reset(), 300);
+        },
+        reset() {
+            body.innerHTML = `
+                <p class="pix-modal-title">Pagar via PIX</p>
+                <p style="font-size:12px;color:#9ca3af;text-align:center;margin-bottom:16px;">Digite o valor que deseja pagar</p>
+                <div style="position:relative;margin-bottom:16px;">
+                    <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;font-weight:700;color:#374151;">R$</span>
+                    <input type="number" id="pix-din-valor" min="0.01" max="9999.99" step="0.01"
+                           placeholder="0,00"
+                           style="width:100%;padding:14px 14px 14px 42px;border:2px solid #e5e7eb;border-radius:14px;
+                                  font-size:20px;font-weight:700;color:#111827;outline:none;box-sizing:border-box;
+                                  -moz-appearance:textfield;"
+                           oninput="this.style.borderColor='#e5e7eb';document.getElementById('pix-din-erro').textContent=''"
+                           onkeydown="if(event.key==='Enter') pixDinamicoModal.gerar()">
+                </div>
+                <p id="pix-din-erro" style="color:#ef4444;font-size:12px;text-align:center;min-height:16px;margin-bottom:8px;"></p>
+                <button onclick="pixDinamicoModal.gerar()"
+                        style="width:100%;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:700;
+                               color:#fff;cursor:pointer;background:var(--card-button, #F77F00);">
+                    Gerar QR PIX
+                </button>
+                <button onclick="pixDinamicoModal.close()"
+                        style="display:block;width:100%;margin-top:10px;padding:12px;border:none;
+                               background:#f3f4f6;border-radius:14px;font-size:13px;font-weight:600;
+                               color:#6b7280;cursor:pointer;">Fechar</button>
+            `;
+        },
+        gerar() {
+            const input = document.getElementById('pix-din-valor');
+            const erro  = document.getElementById('pix-din-erro');
+            const val   = parseFloat(input?.value);
+            if (!val || val < 0.01) {
+                if (input) input.style.borderColor = '#ef4444';
+                if (erro)  erro.textContent = 'Digite um valor válido (mínimo R$ 0,01).';
+                return;
+            }
+            if (val > 9999.99) {
+                if (input) input.style.borderColor = '#ef4444';
+                if (erro)  erro.textContent = 'Valor máximo: R$ 9.999,99.';
+                return;
+            }
+            body.innerHTML = '<div class="pix-spinner"></div>';
+            fetch(`/u/${slug}/pix/payload?amount=${val.toFixed(2)}`)
+                .then(r => r.json())
+                .then(data => {
+                    body.innerHTML = `
+                        <p class="pix-modal-title">PIX — ${data.formatted}</p>
+                        <div class="pix-qr-wrap">${data.qr_svg}</div>
+                        <p style="font-size:11px;color:#9ca3af;text-align:center;margin-bottom:12px;">
+                            Abra o app do seu banco e escaneie o QR Code ou copie o código abaixo.
+                        </p>
+                        <div class="pix-payload-box">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <span class="pix-payload-text">${data.payload}</span>
+                        </div>
+                        <button class="pix-copy-btn" onclick="navigator.clipboard.writeText('${data.payload}').then(()=>{document.getElementById('pix-din-fb').textContent='✓ Código copiado! Cole no seu banco.'})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#431900" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Pix copia e cola
+                        </button>
+                        <p class="pix-feedback" id="pix-din-fb"></p>
+                        <button onclick="pixDinamicoModal.close()" style="display:block;width:100%;margin-top:10px;padding:12px;
+                                border:none;background:#f3f4f6;border-radius:14px;font-size:13px;font-weight:600;
+                                color:#6b7280;cursor:pointer;">Fechar</button>
+                    `;
+                })
+                .catch(() => {
+                    body.innerHTML = '<p style="text-align:center;font-size:13px;color:#ef4444;padding:24px 0;">Erro ao gerar PIX. Tente novamente.</p>';
+                });
+        },
+    };
+})();
 </script>
 @endif
 

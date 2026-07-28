@@ -14,12 +14,18 @@ class EfiBankService
 {
     protected function options(): array
     {
+        try {
+            $sandbox = (bool) AppSetting::get('efi_sandbox', true);
+        } catch (\Throwable) {
+            $sandbox = (bool) env('EFI_SANDBOX', true);
+        }
+
         return [
             'clientId'       => config('services.efibank.client_id'),
             'clientSecret'   => config('services.efibank.client_secret'),
             'certificate'    => config('services.efibank.certificate'),
             'pwdCertificate' => config('services.efibank.certificate_pwd', ''),
-            'sandbox'        => (bool) AppSetting::get('efi_sandbox', true),
+            'sandbox'        => $sandbox,
             'timeout'        => 30,
         ];
     }
@@ -47,13 +53,15 @@ class EfiBankService
      */
     public function createCheckoutLink(User $user, string $planType): string
     {
-        $planId = $planType === 'annual'
-            ? config('services.efibank.plan_id_annual')
-            : config('services.efibank.plan_id_monthly');
+        $settingKey = $planType === 'annual' ? 'efi_plan_id_annual' : 'efi_plan_id_monthly';
+        $planId = AppSetting::get($settingKey)
+            ?: ($planType === 'annual'
+                ? config('services.efibank.plan_id_annual')
+                : config('services.efibank.plan_id_monthly'));
 
         if (!$planId) {
             throw new RuntimeException(
-                'Plano Efi Bank não configurado. Rode "php artisan efibank:setup-plans" e preencha EFI_PLAN_ID_MONTHLY/EFI_PLAN_ID_ANNUAL no .env.'
+                'Plano Efi Bank não configurado. Rode "php artisan efibank:setup-plans" ou configure os IDs em Admin → Configurações.'
             );
         }
 
