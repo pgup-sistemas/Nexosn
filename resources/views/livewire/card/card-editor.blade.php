@@ -169,11 +169,18 @@
 
         <div class="grid grid-cols-1 gap-3">
             <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Telefone / WhatsApp</label>
+                <label class="text-xs font-medium text-gray-600">Celular / WhatsApp</label>
                 <input wire:model="contact_phone" type="text" maxlength="20"
                        placeholder="(69) 99999-9999"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                 @error('contact_phone')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-600">Telefone fixo</label>
+                <input wire:model="contact_landline" type="text" maxlength="20"
+                       placeholder="(69) 3222-0000"
+                       class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                @error('contact_landline')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
             <div class="space-y-1">
                 <label class="text-xs font-medium text-gray-600">E-mail de contato</label>

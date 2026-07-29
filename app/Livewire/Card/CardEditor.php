@@ -41,6 +41,9 @@ class CardEditor extends Component
     #[Validate('nullable|string|max:20')]
     public string $contact_phone = '';
 
+    #[Validate('nullable|string|max:20')]
+    public string $contact_landline = '';
+
     #[Validate('nullable|string|max:255')]
     public string $address = '';
 
@@ -68,6 +71,7 @@ class CardEditor extends Component
             $this->bio                 = $this->card->bio ?? '';
             $this->contact_email       = $this->card->contact_email ?? '';
             $this->contact_phone       = $this->card->contact_phone ?? '';
+            $this->contact_landline    = $this->card->contact_landline ?? '';
             $this->address             = $this->card->address ?? '';
             $this->website             = $this->card->website ?? '';
             $this->pix_key             = $this->card->pix_key ?? '';
@@ -108,6 +112,7 @@ class CardEditor extends Component
             'bio'                => 'nullable|string|max:500',
             'contact_email'      => 'nullable|email|max:255',
             'contact_phone'      => 'nullable|string|max:20',
+            'contact_landline'   => 'nullable|string|max:20',
             'address'            => 'nullable|string|max:255',
             'website'            => 'nullable|url|max:255',
             'pix_key'            => 'nullable|string|max:100',

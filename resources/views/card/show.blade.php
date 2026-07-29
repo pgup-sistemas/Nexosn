@@ -499,7 +499,7 @@ function nexosnShare() {
 @endif
 
 {{-- ── CONTATO ── --}}
-@if ($card->contact_phone || $card->contact_email || $card->website)
+@if ($card->contact_phone || $card->contact_landline || $card->contact_email || $card->website)
 <div class="cs" x-data="{ open: true }">
     <button class="cs-head" type="button" @click="open = !open">
         <div class="cs-label">
@@ -519,8 +519,15 @@ function nexosnShare() {
 
         @if ($card->contact_phone)
         <a href="tel:{{ preg_replace('/\D/', '', $card->contact_phone) }}" class="crow">
-            <i data-lucide="phone" style="width:15px;height:15px;color:var(--ui-icon);flex-shrink:0;"></i>
+            <i data-lucide="smartphone" style="width:15px;height:15px;color:var(--ui-icon);flex-shrink:0;"></i>
             <span>{{ $card->contact_phone }}</span>
+        </a>
+        @endif
+
+        @if ($card->contact_landline)
+        <a href="tel:{{ preg_replace('/\D/', '', $card->contact_landline) }}" class="crow">
+            <i data-lucide="phone" style="width:15px;height:15px;color:var(--ui-icon);flex-shrink:0;"></i>
+            <span>{{ $card->contact_landline }}</span>
         </a>
         @endif
 

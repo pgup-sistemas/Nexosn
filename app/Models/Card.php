@@ -15,7 +15,7 @@ class Card extends Model
         'profile_photo', 'cover_photo', 'logo',
         'brand_color_primary', 'brand_color_button',
         'show_watermark',
-        'contact_email', 'contact_phone', 'address', 'website', 'pix_key',
+        'contact_email', 'contact_phone', 'contact_landline', 'address', 'website', 'pix_key',
     ];
 
     protected $casts = [

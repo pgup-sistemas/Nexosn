@@ -23,6 +23,10 @@ class VCardService
             $lines[] = 'TEL;TYPE=CELL:' . preg_replace('/\D/', '', $card->contact_phone);
         }
 
+        if ($card->contact_landline) {
+            $lines[] = 'TEL;TYPE=WORK:' . preg_replace('/\D/', '', $card->contact_landline);
+        }
+
         if ($card->contact_email) {
             $lines[] = 'EMAIL:' . $card->contact_email;
         }
