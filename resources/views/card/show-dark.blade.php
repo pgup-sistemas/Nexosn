@@ -15,18 +15,18 @@
         --card-button:     {{ $card->button_color }};
         --card-shell-bg:   #0B0B0D;
         --dk-bg:           #0B0B0D;
-        --dk-surf1:     #141416;
-        --dk-surf2:     #1E1E22;
-        --dk-surf3:     #2A2A30;
-        --dk-border:    rgba(255,255,255,0.06);
-        --dk-border-md: rgba(255,255,255,0.1);
-        --dk-gold:      #C9A96E;
-        --dk-gold-dim:  rgba(201,169,110,0.12);
-        --dk-gold-ring: rgba(201,169,110,0.25);
-        --dk-text:      #F0F0F4;
-        --dk-text-md:   #9A9AAA;
-        --dk-text-muted:#4A4A58;
-        --dk-tap:       rgba(255,255,255,0.04);
+        --dk-surf1:     #18181C;
+        --dk-surf2:     #222228;
+        --dk-surf3:     #30303A;
+        --dk-border:    rgba(255,255,255,0.08);
+        --dk-border-md: rgba(255,255,255,0.13);
+        --dk-gold:      #D4B478;
+        --dk-gold-dim:  rgba(212,180,120,0.13);
+        --dk-gold-ring: rgba(212,180,120,0.28);
+        --dk-text:      #F4F4F8;
+        --dk-text-md:   #AEAEBB;
+        --dk-text-muted:#6A6A7A;
+        --dk-tap:       rgba(255,255,255,0.05);
     }
 
     [x-cloak] { display: none !important; }
@@ -41,9 +41,9 @@
         padding: 24px 22px 0;
     }
     .dk-section-label {
-        font-size: 9px;
+        font-size: 10px;
         font-weight: 700;
-        letter-spacing: 2.5px;
+        letter-spacing: 2px;
         text-transform: uppercase;
         color: var(--dk-text-muted);
         margin-bottom: 14px;
@@ -83,16 +83,16 @@
     }
     .dk-row-info { flex: 1; min-width: 0; }
     .dk-row-label {
-        font-size: 9px;
+        font-size: 10px;
         font-weight: 700;
-        letter-spacing: 1.5px;
+        letter-spacing: 1.2px;
         text-transform: uppercase;
         color: var(--dk-text-muted);
         line-height: 1;
     }
     .dk-row-value {
-        font-size: 13px;
-        color: #b8b8c8;
+        font-size: 14px;
+        color: #c8c8d8;
         margin-top: 2px;
         white-space: nowrap;
         overflow: hidden;
@@ -124,9 +124,9 @@
         opacity: .45;
     }
     .dk-link-name {
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 500;
-        color: #c0c0d0;
+        color: #ccccd8;
         flex: 1;
     }
 
@@ -139,9 +139,9 @@
         border-radius: 99px;
         border: 1px solid var(--dk-border-md);
         background: var(--dk-tap);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 600;
-        color: var(--dk-text-muted);
+        color: var(--dk-text-md);
         text-decoration: none;
         white-space: nowrap;
         transition: border-color .12s, color .12s;
@@ -179,9 +179,9 @@
         flex-shrink: 0;
     }
     .dk-svc-info { flex: 1; min-width: 0; }
-    .dk-svc-name { font-size: 13.5px; font-weight: 600; color: #d8d8e8; line-height: 1.3; }
-    .dk-svc-desc { font-size: 11px; color: var(--dk-text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .dk-svc-price { font-size: 14px; font-weight: 700; color: var(--dk-gold); white-space: nowrap; flex-shrink: 0; }
+    .dk-svc-name { font-size: 14.5px; font-weight: 600; color: #e0e0ee; line-height: 1.3; }
+    .dk-svc-desc { font-size: 12px; color: var(--dk-text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dk-svc-price { font-size: 15px; font-weight: 700; color: var(--dk-gold); white-space: nowrap; flex-shrink: 0; }
 
     /* ── Botão PIX ── */
     .dk-pix-btn {
@@ -213,9 +213,9 @@
         border-radius: 99px;
         border: 1px solid var(--dk-border-md);
         background: var(--dk-tap);
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 600;
-        color: var(--dk-text-muted);
+        color: var(--dk-text-md);
         letter-spacing: .3px;
         cursor: pointer;
         text-decoration: none;
@@ -587,7 +587,7 @@
 @if ($card->bio)
 <div class="dk-section">
     <p class="dk-section-label">Sobre</p>
-    <p style="font-size:13.5px;color:#6b6b80;line-height:1.75;white-space:pre-line;">{{ $card->bio }}</p>
+    <p style="font-size:14.5px;color:#7e7e92;line-height:1.75;white-space:pre-line;">{{ $card->bio }}</p>
 </div>
 <div class="dk-rule" style="margin-top:24px;"></div>
 @endif
