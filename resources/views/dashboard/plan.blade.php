@@ -4,6 +4,7 @@
     $user    = auth()->user();
     $isPro   = $user->isPro();
     $inTrial = $user->isOnTrial();
+    $isPaid  = $isPro && !$inTrial; // assinatura paga ativa (não apenas trial)
     $planOk  = \App\Models\AppSetting::get('efi_plan_id_monthly') || config('services.efibank.plan_id_monthly');
 @endphp
 
@@ -104,30 +105,38 @@
                 <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-green-600"></i>Sem marca d'água</li>
             </ul>
 
-            @if(!$isPro)
-                @if($planOk)
-                <a href="{{ route('dashboard.checkout', 'monthly') }}"
-                   class="flex items-center justify-center gap-2 w-full py-3 rounded-[10px] text-white text-[13px] font-medium"
-                   style="background-color: #D62828;">
-                    <i data-lucide="star" class="w-4 h-4"></i>
-                    Assinar Pro — R$ 19,90/mês
-                </a>
-                <a href="{{ route('dashboard.checkout', 'annual') }}"
-                   class="flex items-center justify-center gap-2 w-full mt-2 py-2.5 rounded-[10px] border text-[12px] font-medium"
-                   style="border-color: #003049; color: #003049;">
-                    Assinar anual — R$ 179,90/ano
-                </a>
-                @else
-                <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-[10px] p-3 text-[12px] text-yellow-800">
-                    <i data-lucide="clock" class="w-4 h-4 flex-shrink-0"></i>
-                    Pagamento em configuração — em breve disponível. Fale com o suporte se precisar ativar manualmente.
-                </div>
-                @endif
-            @else
+            @if($isPaid)
+            {{-- Assinatura paga ativa --}}
             <div class="flex items-center gap-2 bg-green-50 rounded-[10px] p-3 text-[13px] text-green-800">
                 <i data-lucide="check-circle" class="w-4 h-4"></i>
                 Você já tem o plano Pro ativo!
             </div>
+            @else
+            {{-- Free ou Trial — mostrar botões de assinatura --}}
+            @if($inTrial)
+            <div class="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-[10px] p-3 text-[12px] text-blue-800 mb-3">
+                <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                Você está no período de trial. Assine agora para continuar após o encerramento.
+            </div>
+            @endif
+            @if($planOk)
+            <a href="{{ route('dashboard.checkout', 'monthly') }}"
+               class="flex items-center justify-center gap-2 w-full py-3 rounded-[10px] text-white text-[13px] font-medium"
+               style="background-color: #D62828;">
+                <i data-lucide="star" class="w-4 h-4"></i>
+                Assinar Pro — R$ 19,90/mês
+            </a>
+            <a href="{{ route('dashboard.checkout', 'annual') }}"
+               class="flex items-center justify-center gap-2 w-full mt-2 py-2.5 rounded-[10px] border text-[12px] font-medium"
+               style="border-color: #003049; color: #003049;">
+                Assinar anual — R$ 179,90/ano
+            </a>
+            @else
+            <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-[10px] p-3 text-[12px] text-yellow-800">
+                <i data-lucide="clock" class="w-4 h-4 flex-shrink-0"></i>
+                Pagamento em configuração — em breve disponível.
+            </div>
+            @endif
             @endif
         </div>
 
