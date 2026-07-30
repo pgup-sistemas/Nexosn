@@ -16,6 +16,7 @@ class Card extends Model
         'brand_color_primary', 'brand_color_button',
         'show_watermark',
         'contact_email', 'contact_phone', 'contact_landline', 'address', 'website', 'pix_key',
+        'template',
     ];
 
     protected $casts = [

@@ -53,6 +53,9 @@ class CardEditor extends Component
     #[Validate('nullable|string|max:100')]
     public string $pix_key = '';
 
+    #[Validate('nullable|in:default,dark')]
+    public string $template = 'default';
+
     #[Validate('nullable|regex:/^#[0-9A-Fa-f]{6}$/')]
     public string $brand_color_primary = '';
 
@@ -75,6 +78,7 @@ class CardEditor extends Component
             $this->address             = $this->card->address ?? '';
             $this->website             = $this->card->website ?? '';
             $this->pix_key             = $this->card->pix_key ?? '';
+            $this->template            = $this->card->template ?? 'default';
             $this->brand_color_primary = $this->card->brand_color_primary ?? '#003049';
             $this->brand_color_button  = $this->card->brand_color_button  ?? '#D62828';
         }
@@ -116,6 +120,7 @@ class CardEditor extends Component
             'address'            => 'nullable|string|max:255',
             'website'            => 'nullable|url|max:255',
             'pix_key'            => 'nullable|string|max:100',
+            'template'           => 'nullable|in:default,dark',
             'brand_color_primary'=> 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'brand_color_button' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]));

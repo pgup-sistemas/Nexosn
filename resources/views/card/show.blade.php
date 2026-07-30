@@ -617,12 +617,19 @@ function compartilharLocalizacao() {
 </script>
 @endif
 
-{{-- ── PIX ── --}}
+{{-- ── PIX DINÂMICO ── --}}
 @if ($card->pix_key)
-<button type="button" onclick="pixDinamicoModal.open()" class="abtn abtn-pix" style="border-radius:16px;">
-    <i data-lucide="qr-code" style="width:17px;height:17px;opacity:.75;"></i>
-    Pagar via PIX
-</button>
+<div class="cs">
+    <div style="padding:14px 16px 16px;">
+        <button type="button" onclick="pixDinamicoModal.open()" class="abtn abtn-pix" style="border-radius:12px;">
+            <i data-lucide="qr-code" style="width:17px;height:17px;opacity:.8;"></i>
+            Pagar via PIX — valor livre
+        </button>
+        <p style="font-size:11px;color:#9ca3af;text-align:center;margin:8px 0 0;line-height:1.4;">
+            Digite qualquer valor e gere o QR Code na hora
+        </p>
+    </div>
+</div>
 
 {{-- Modal PIX dinâmico --}}
 <div id="pix-din-overlay" class="pix-modal-overlay" onclick="pixDinamicoModal.close()"></div>
@@ -753,7 +760,7 @@ function compartilharLocalizacao() {
 
 {{-- ── SERVIÇOS + PIX ── --}}
 @php $activeServices = $card->services->where('is_active', true); @endphp
-@if ($activeServices->isNotEmpty() && $card->pix_key)
+@if ($activeServices->isNotEmpty())
 <div class="cs" x-data="{ open: true }">
     <button class="cs-head" type="button" @click="open = !open">
         <div class="cs-label">

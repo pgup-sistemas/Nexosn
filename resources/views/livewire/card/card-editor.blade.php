@@ -46,6 +46,60 @@
         </div>
     </div>
 
+    {{-- Template do cartão --}}
+    <div class="space-y-3">
+        <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">
+            <i data-lucide="layout" class="w-4 h-4" style="color: var(--color-primary);"></i>
+            Estilo do cartão
+        </h3>
+        <div class="grid grid-cols-2 gap-3">
+
+            {{-- Default --}}
+            <button type="button" wire:click="$set('template', 'default')"
+                    class="relative rounded-xl border-2 overflow-hidden text-left transition-all
+                           {{ $template === 'default' ? 'border-[#003049]' : 'border-gray-200 hover:border-gray-300' }}">
+                <div class="bg-white h-20 flex flex-col gap-1 p-2.5">
+                    <div class="w-8 h-8 rounded-full bg-gray-200"></div>
+                    <div class="h-2 w-16 rounded bg-gray-200"></div>
+                    <div class="h-1.5 w-10 rounded bg-gray-100"></div>
+                    <div class="h-5 w-full rounded-lg mt-auto" style="background:#003049;opacity:.15;"></div>
+                </div>
+                <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-gray-700">Clássico</p>
+                        <p class="text-[10px] text-gray-400">Fundo branco</p>
+                    </div>
+                    @if ($template === 'default')
+                    <i data-lucide="check-circle" class="w-4 h-4" style="color:#003049;"></i>
+                    @endif
+                </div>
+            </button>
+
+            {{-- Dark --}}
+            <button type="button" wire:click="$set('template', 'dark')"
+                    class="relative rounded-xl border-2 overflow-hidden text-left transition-all
+                           {{ $template === 'dark' ? 'border-[#C9A96E]' : 'border-gray-200 hover:border-gray-300' }}">
+                <div class="h-20 flex flex-col gap-1 p-2.5" style="background:#0B0B0D;">
+                    <div class="w-8 h-8 rounded-full" style="background:#1e1e24;border:1.5px solid rgba(201,169,110,.3);"></div>
+                    <div class="h-2 w-16 rounded" style="background:#2a2a32;"></div>
+                    <div class="h-1.5 w-10 rounded" style="background:#1e1e24;"></div>
+                    <div class="h-5 w-full rounded-lg mt-auto" style="background:linear-gradient(90deg,#9A6E2E,#C9A96E);"></div>
+                </div>
+                <div class="px-3 py-2 border-t flex items-center justify-between" style="background:#141416;border-color:#1e1e24;">
+                    <div>
+                        <p class="text-xs font-semibold" style="color:#C9A96E;">Premium</p>
+                        <p class="text-[10px]" style="color:#4a4a55;">Fundo escuro</p>
+                    </div>
+                    @if ($template === 'dark')
+                    <i data-lucide="check-circle" class="w-4 h-4" style="color:#C9A96E;"></i>
+                    @endif
+                </div>
+            </button>
+
+        </div>
+        <p class="text-xs text-gray-400">O estilo é aplicado ao seu cartão público imediatamente.</p>
+    </div>
+
     {{-- Fotos: Avatar e Capa --}}
     <div class="space-y-4">
         <h3 class="text-sm font-semibold text-gray-700 flex items-center gap-2">

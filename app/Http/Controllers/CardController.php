@@ -28,7 +28,8 @@ class CardController extends Controller
         // QR Code inline: evita requisição extra — funciona offline após 1ª carga
         $qrSvg = $qrService->generateSvg($card);
 
-        return view('card.show', compact('card', 'qrSvg'));
+        $view = $card->template === 'dark' ? 'card.show-dark' : 'card.show';
+        return view($view, compact('card', 'qrSvg'));
     }
 
     public function trackClick(string $slug, int $linkId): \Illuminate\Http\RedirectResponse
