@@ -17,7 +17,7 @@ class PlanDowngradedMail extends Mailable
 
     public function envelope(): Envelope
     {
-        return new Envelope(subject: '[Card] Seu plano foi alterado para Free');
+        return new Envelope(subject: '[NEXOSN] Seu plano foi alterado para Free');
     }
 
     public function content(): Content

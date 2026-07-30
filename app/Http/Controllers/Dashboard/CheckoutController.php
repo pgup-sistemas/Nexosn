@@ -17,10 +17,17 @@ class CheckoutController extends Controller
         try {
             $url = $efiBank->createCheckoutLink(auth()->user(), $planType);
         } catch (RuntimeException $e) {
-            Log::error('checkout.efibank_error', ['message' => $e->getMessage()]);
+            Log::error('checkout.efibank_error', [
+                'message' => $e->getMessage(),
+                'user_id' => auth()->id(),
+                'plan'    => $planType,
+            ]);
 
-            return redirect()->route('dashboard.plan')
-                ->with('erro', 'Não foi possível gerar o link de pagamento agora. Tente novamente em instantes ou contate o suporte.');
+            $msg = str_contains($e->getMessage(), 'não configurado')
+                ? 'O sistema de pagamentos ainda está em configuração. Por favor, aguarde ou entre em contato com o suporte.'
+                : 'Não foi possível gerar o link de pagamento. Tente novamente em instantes ou contate o suporte.';
+
+            return redirect()->route('dashboard.plan')->with('erro', $msg);
         }
 
         return redirect()->away($url);

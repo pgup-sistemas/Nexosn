@@ -65,10 +65,14 @@ class EfiBankService
             );
         }
 
-        $price = (float) AppSetting::get('plan_price_monthly', 29.90);
+        $price = (float) AppSetting::get('plan_price_monthly', 19.90);
         if ($planType === 'annual') {
             $price = round($price * 12 * 0.75, 2); // 25% de desconto anual (mesmo destaque da home/planos)
         }
+
+        // notification_url usa AppSetting para funcionar no servidor sem reconfigurar .env
+        $appUrl = AppSetting::get('app_url') ?: config('app.url');
+        $webhookUrl = rtrim($appUrl, '/') . '/webhook/efibank';
 
         $body = [
             'items' => [[
@@ -77,11 +81,13 @@ class EfiBankService
                 'amount' => 1,
             ]],
             'settings' => [
-                'payment_method' => 'all',
+                'payment_method'    => 'all',
+                'return_url'        => rtrim($appUrl, '/') . '/dashboard/plan?status=pago',
+                'back_url'          => rtrim($appUrl, '/') . '/dashboard/plan',
             ],
             'metadata' => [
                 'custom_id'        => "user-{$user->id}",
-                'notification_url' => route('webhook.efibank'),
+                'notification_url' => $webhookUrl,
             ],
         ];
 
@@ -139,7 +145,8 @@ class EfiBankService
             return;
         }
 
-        $user = $this->resolveUserFromSubscription((int) $subscriptionId);
+        $detail = $this->fetchSubscriptionDetail((int) $subscriptionId);
+        $user   = $this->resolveUserFromDetail((int) $subscriptionId, $detail);
         if (!$user) {
             return;
         }
@@ -151,15 +158,14 @@ class EfiBankService
         ]);
 
         match ($status) {
-            'active', 'paid'       => $this->activate($user, (int) $subscriptionId),
+            'active', 'paid'       => $this->activate($user, (int) $subscriptionId, $detail),
             'canceled', 'expired'  => $this->downgradeAndNotify($user),
             default                => null,
         };
     }
 
-    private function resolveUserFromSubscription(int $subscriptionId): ?User
+    private function resolveUserFromDetail(int $subscriptionId, array $detail): ?User
     {
-        $detail   = $this->fetchSubscriptionDetail($subscriptionId);
         $customId = $detail['data']['custom_id'] ?? null;
 
         if (!$customId || !str_starts_with($customId, 'user-')) {
@@ -183,9 +189,8 @@ class EfiBankService
         return $user;
     }
 
-    private function activate(User $user, int $subscriptionId): void
+    private function activate(User $user, int $subscriptionId, array $detail): void
     {
-        $detail   = $this->fetchSubscriptionDetail($subscriptionId);
         $interval = $detail['data']['plan']['interval'] ?? 1;
 
         app(PlanService::class)->activatePro($user, (string) $subscriptionId, now()->addMonths((int) $interval));

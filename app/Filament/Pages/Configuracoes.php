@@ -3,6 +3,8 @@
 namespace App\Filament\Pages;
 
 use App\Models\AppSetting;
+use App\Services\EfiBankService;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -13,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Support\Facades\Cache;
+use Throwable;
 
 class Configuracoes extends Page implements HasForms
 {
@@ -26,7 +29,7 @@ class Configuracoes extends Page implements HasForms
 
     // ── Estado do formulário ─────────────────────────────────────────────────
 
-    public float  $plan_price_monthly  = 29.90;
+    public float  $plan_price_monthly  = 19.90;
     public int    $trial_days          = 14;
     public int    $limit_free_links    = 5;
     public int    $limit_free_photos   = 3;
@@ -64,6 +67,63 @@ class Configuracoes extends Page implements HasForms
         }
 
         $this->form->fill(array_combine($keys, array_map(fn ($k) => $this->{$k}, $keys)));
+    }
+
+    // ── Ações do cabeçalho ───────────────────────────────────────────────────
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('criar_planos_efi')
+                ->label('Criar Planos na Efi Bank')
+                ->icon('heroicon-o-credit-card')
+                ->color('warning')
+                ->requiresConfirmation()
+                ->modalHeading('Criar Planos na Efi Bank')
+                ->modalDescription('Isso vai criar os planos de assinatura (mensal e anual) na sua conta Efi Bank e salvar os IDs aqui automaticamente. Certifique-se de que as credenciais EFI_CLIENT_ID e EFI_CLIENT_SECRET estão configuradas no servidor.')
+                ->modalSubmitActionLabel('Criar agora')
+                ->action(function () {
+                    try {
+                        $efi = app(EfiBankService::class);
+
+                        $monthly = $efi->createPlan('NEXOSN Pro — Mensal', intervalMonths: 1);
+                        $annual  = $efi->createPlan('NEXOSN Pro — Anual', intervalMonths: 12);
+
+                        $monthlyId = $monthly['data']['plan_id'] ?? null;
+                        $annualId  = $annual['data']['plan_id'] ?? null;
+
+                        if ($monthlyId && $annualId) {
+                            AppSetting::set('efi_plan_id_monthly', (string) $monthlyId);
+                            AppSetting::set('efi_plan_id_annual', (string) $annualId);
+
+                            // Atualiza os campos do formulário ao vivo
+                            $this->efi_plan_id_monthly = (string) $monthlyId;
+                            $this->efi_plan_id_annual  = (string) $annualId;
+
+                            Notification::make()
+                                ->title('Planos criados com sucesso!')
+                                ->body("Mensal: {$monthlyId} · Anual: {$annualId}")
+                                ->success()
+                                ->persistent()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Planos criados, mas IDs não retornados')
+                                ->body('Verifique a conta Efi Bank e insira os IDs manualmente.')
+                                ->warning()
+                                ->persistent()
+                                ->send();
+                        }
+                    } catch (Throwable $e) {
+                        Notification::make()
+                            ->title('Falha ao criar planos')
+                            ->body($e->getMessage())
+                            ->danger()
+                            ->persistent()
+                            ->send();
+                    }
+                }),
+        ];
     }
 
     // ── Formulário ────────────────────────────────────────────────────────────

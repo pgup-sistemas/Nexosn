@@ -4,6 +4,7 @@
     $user    = auth()->user();
     $isPro   = $user->isPro();
     $inTrial = $user->isOnTrial();
+    $planOk  = \App\Models\AppSetting::get('efi_plan_id_monthly') || config('services.efibank.plan_id_monthly');
 @endphp
 
 <div>
@@ -35,6 +36,13 @@
         </p>
         @endif
     </div>
+
+    @if (request('status') === 'pago')
+    <div class="mx-4 mb-4 flex items-center gap-2 bg-green-50 border border-green-200 rounded-[10px] p-3 text-[13px] text-green-800">
+        <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
+        Pagamento recebido! Seu plano será ativado em instantes. Atualize a página se necessário.
+    </div>
+    @endif
 
     @if (session('aviso_upgrade'))
     <div class="mx-4 mb-4 flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-[10px] p-3 text-[13px] text-yellow-800">
@@ -97,17 +105,24 @@
             </ul>
 
             @if(!$isPro)
-            <a href="{{ route('dashboard.checkout', 'monthly') }}"
-               class="flex items-center justify-center gap-2 w-full py-3 rounded-[10px] text-white text-[13px] font-medium"
-               style="background-color: #D62828;">
-                <i data-lucide="star" class="w-4 h-4"></i>
-                Assinar Pro — R$ 19,90/mês
-            </a>
-            <a href="{{ route('dashboard.checkout', 'annual') }}"
-               class="flex items-center justify-center gap-2 w-full mt-2 py-2.5 rounded-[10px] border text-[12px] font-medium"
-               style="border-color: #003049; color: #003049;">
-                Assinar anual — R$ 179,90/ano
-            </a>
+                @if($planOk)
+                <a href="{{ route('dashboard.checkout', 'monthly') }}"
+                   class="flex items-center justify-center gap-2 w-full py-3 rounded-[10px] text-white text-[13px] font-medium"
+                   style="background-color: #D62828;">
+                    <i data-lucide="star" class="w-4 h-4"></i>
+                    Assinar Pro — R$ 19,90/mês
+                </a>
+                <a href="{{ route('dashboard.checkout', 'annual') }}"
+                   class="flex items-center justify-center gap-2 w-full mt-2 py-2.5 rounded-[10px] border text-[12px] font-medium"
+                   style="border-color: #003049; color: #003049;">
+                    Assinar anual — R$ 179,90/ano
+                </a>
+                @else
+                <div class="flex items-center gap-2 bg-yellow-50 border border-yellow-200 rounded-[10px] p-3 text-[12px] text-yellow-800">
+                    <i data-lucide="clock" class="w-4 h-4 flex-shrink-0"></i>
+                    Pagamento em configuração — em breve disponível. Fale com o suporte se precisar ativar manualmente.
+                </div>
+                @endif
             @else
             <div class="flex items-center gap-2 bg-green-50 rounded-[10px] p-3 text-[13px] text-green-800">
                 <i data-lucide="check-circle" class="w-4 h-4"></i>
