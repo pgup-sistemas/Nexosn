@@ -15,8 +15,8 @@ class AuditLogResource extends Resource
 {
     protected static ?string $model = AuditLog::class;
     protected static ?string $navigationLabel = 'Log de Auditoria';
-    protected static ?string $navigationGroup = 'Sistema';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $navigationGroup = 'Financeiro';
+    protected static ?int    $navigationSort  = 2;
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
     public static function canCreate(): bool
@@ -44,9 +44,22 @@ class AuditLogResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('action')
+                Tables\Columns\BadgeColumn::make('action')
                     ->label('Ação')
-                    ->badge(),
+                    ->colors([
+                        'warning' => 'impersonation',
+                        'success' => fn ($s) => in_array($s, ['plan_activated', 'trial_extended', 'card_reactivated']),
+                        'danger'  => fn ($s) => in_array($s, ['plan_downgraded', 'card_suspended']),
+                    ])
+                    ->formatStateUsing(fn ($state) => match($state) {
+                        'impersonation'   => 'Impersonação',
+                        'plan_activated'  => 'Pro ativado',
+                        'plan_downgraded' => 'Downgrade Free',
+                        'trial_extended'  => 'Trial estendido',
+                        'card_suspended'  => 'Cartão suspenso',
+                        'card_reactivated'=> 'Cartão reativado',
+                        default           => $state,
+                    }),
                 Tables\Columns\TextColumn::make('admin.name')
                     ->label('Admin')
                     ->searchable(),
@@ -54,6 +67,10 @@ class AuditLogResource extends Resource
                     ->label('Alvo')
                     ->searchable()
                     ->placeholder('—'),
+                Tables\Columns\TextColumn::make('payload.note')
+                    ->label('Observação')
+                    ->placeholder('—')
+                    ->limit(40),
                 Tables\Columns\TextColumn::make('ip_address')
                     ->label('IP'),
                 Tables\Columns\TextColumn::make('created_at')

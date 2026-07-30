@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Mail\PlanDowngradedMail;
 use App\Models\AppSetting;
+use App\Models\Invoice;
 use App\Models\User;
 use Efi\EfiPay;
 use Illuminate\Support\Facades\Log;
@@ -191,9 +192,26 @@ class EfiBankService
 
     private function activate(User $user, int $subscriptionId, array $detail): void
     {
-        $interval = $detail['data']['plan']['interval'] ?? 1;
+        $interval  = $detail['data']['plan']['interval'] ?? 1;
+        $planType  = $interval >= 12 ? 'annual' : 'monthly';
+        $expiresAt = now()->addMonths((int) $interval);
 
-        app(PlanService::class)->activatePro($user, (string) $subscriptionId, now()->addMonths((int) $interval));
+        app(PlanService::class)->activatePro($user, (string) $subscriptionId, $expiresAt);
+
+        // Registra fatura paga
+        $price = (float) AppSetting::get('plan_price_monthly', 19.90);
+        $amount = $planType === 'annual' ? round($price * 12 * 0.75, 2) : $price;
+
+        Invoice::updateOrCreate(
+            ['user_id' => $user->id, 'efi_subscription_id' => (string) $subscriptionId, 'status' => 'pending'],
+            [
+                'plan_type'   => $planType,
+                'amount'      => $amount,
+                'status'      => 'paid',
+                'description' => 'NEXOSN Pro — ' . ($planType === 'annual' ? 'Anual' : 'Mensal'),
+                'paid_at'     => now(),
+            ]
+        );
     }
 
     private function downgradeAndNotify(User $user): void
