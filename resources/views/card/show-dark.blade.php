@@ -41,11 +41,11 @@
         padding: 24px 22px 0;
     }
     .dk-section-label {
-        font-size: 10px;
+        font-size: 11.5px;
         font-weight: 700;
-        letter-spacing: 2px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        color: var(--dk-text-muted);
+        color: #8A8A9A;
         margin-bottom: 14px;
     }
 
