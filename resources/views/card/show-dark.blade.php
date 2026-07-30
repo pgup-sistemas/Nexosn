@@ -419,6 +419,39 @@
         align-items: center; justify-content: center;
     }
 
+    /* ── Formulário de contato (override do componente Livewire) ── */
+    #dk-form-wrap > div {
+        background: var(--dk-surf1) !important;
+        border-top-color: var(--dk-border) !important;
+    }
+    #dk-form-wrap .bg-gray-50  { background: var(--dk-surf1) !important; }
+    #dk-form-wrap .border-gray-100 { border-color: var(--dk-border) !important; }
+    #dk-form-wrap input,
+    #dk-form-wrap textarea {
+        background: var(--dk-surf2) !important;
+        border-color: rgba(255,255,255,0.1) !important;
+        color: #b8b8c8 !important;
+        font-family: inherit;
+    }
+    #dk-form-wrap input::placeholder,
+    #dk-form-wrap textarea::placeholder { color: var(--dk-text-muted) !important; }
+    #dk-form-wrap input:focus,
+    #dk-form-wrap textarea:focus {
+        border-color: rgba(201,169,110,0.4) !important;
+        outline: none;
+    }
+    #dk-form-wrap .flex.items-center.gap-2.text-sm {
+        color: var(--dk-gold) !important;
+    }
+    #dk-form-wrap .text-gray-800 { color: #F0F0F4 !important; }
+    #dk-form-wrap .text-gray-500 { color: var(--dk-text-muted) !important; }
+    #dk-form-wrap .text-xs.text-red-600 { color: #f87171 !important; }
+    #dk-form-wrap .bg-amber-50 { background: rgba(251,191,36,0.08) !important; border-color: rgba(251,191,36,0.25) !important; }
+    #dk-form-wrap .text-amber-800 { color: #fbbf24 !important; }
+    #dk-form-wrap .bg-green-100 { background: rgba(74,222,128,0.1) !important; }
+    #dk-form-wrap .text-green-600 { color: #4ade80 !important; }
+    #dk-form-wrap .text-green-600[data-lucide] { stroke: #4ade80 !important; }
+
     /* ── Rodapé ── */
     .dk-footer {
         padding: 28px 24px 32px;
@@ -914,7 +947,9 @@ function dkShareLocation() {
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
          style="padding-bottom:12px;">
-        <livewire:card.contact-form :card="$card" />
+        <div id="dk-form-wrap">
+            <livewire:card.contact-form :card="$card" />
+        </div>
     </div>
 </div>
 <div class="dk-rule" style="margin-top:4px;"></div>
