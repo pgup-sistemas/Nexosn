@@ -1129,10 +1129,8 @@ function dkShareNative() {
     }
 }
 function dkDownloadQr() {
-    const svgEl = document.querySelector('[x-show] #qr-inline svg, #qr-inline svg');
-    const allSvg = document.querySelectorAll('svg');
-    // Pega o QR SVG pelo tamanho característico
-    const qrEl = [...allSvg].find(s => s.closest('[x-show]') && s.getAttribute('viewBox'));
+    // QR SVG está dentro do div de compartilhar (background:#fff;padding:10px)
+    const qrEl = document.querySelector('.dk-section [style*="background:#fff"] svg');
     if (!qrEl) return;
     const svgData = new XMLSerializer().serializeToString(qrEl);
     const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
@@ -1311,7 +1309,6 @@ function dkCookieConsent(choice) {
     };
 
     let touchY = null;
-    const sheet = document.getElementById('pix-din-sheet');
     sheet.addEventListener('touchstart', e => { touchY = e.touches[0].clientY; }, { passive: true });
     sheet.addEventListener('touchend', e => {
         if (touchY !== null && (e.changedTouches[0].clientY - touchY) > 60) pixDinamicoModal.close();
