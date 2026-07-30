@@ -11,9 +11,10 @@
 @section('card_colors')
 <style>
     :root {
-        --card-primary: {{ $card->primary_color }};
-        --card-button:  {{ $card->button_color }};
-        --dk-bg:        #0B0B0D;
+        --card-primary:    {{ $card->primary_color }};
+        --card-button:     {{ $card->button_color }};
+        --card-shell-bg:   #0B0B0D;
+        --dk-bg:           #0B0B0D;
         --dk-surf1:     #141416;
         --dk-surf2:     #1E1E22;
         --dk-surf3:     #2A2A30;

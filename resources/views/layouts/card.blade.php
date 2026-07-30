@@ -54,7 +54,7 @@
             margin: 0 auto;
             max-width: 420px;
             min-height: 100vh;
-            background: #fff;
+            background: var(--card-shell-bg, #fff);
             position: relative;
         }
         @media (min-width: 480px) {
