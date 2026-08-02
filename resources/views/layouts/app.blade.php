@@ -20,6 +20,8 @@
         document.addEventListener('livewire:update', () => lucide.createIcons());
     </script>
     <style>
+        [x-cloak] { display: none !important; }
+
         /* Transição suave da sidebar */
         #app-sidebar { transition: width 220ms cubic-bezier(.4,0,.2,1); }
         #app-sidebar .sidebar-label { transition: opacity 150ms ease, width 150ms ease; }

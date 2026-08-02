@@ -45,7 +45,8 @@ class LinkManager extends Component
 
         $planService = app(PlanService::class);
         if (!$planService->withinLimit($user, 'links', $currentCount)) {
-            $this->addError('limit', 'Você atingiu o limite de 5 links no plano Free. Faça upgrade para adicionar mais.');
+            $limite = PlanService::limits('free')['links'];
+            $this->addError('limit', "Você atingiu o limite de {$limite} links no plano Free. Faça upgrade para adicionar mais.");
             return;
         }
 

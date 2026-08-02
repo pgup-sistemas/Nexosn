@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Permitir execução direta de scripts PHP de manutenção
+    RewriteRule ^(migrate-tmp|efi-setup|diag[-\w]*|addenv|fix-google|install-google|rm-tmp)\.php$ - [L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

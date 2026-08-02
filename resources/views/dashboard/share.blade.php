@@ -75,6 +75,47 @@
                 </div>
             </div>
 
+            {{-- Gravação em tag NFC --}}
+            <div class="bg-white rounded-xl border border-gray-200 p-5" x-data="nfcWriter('{{ $cardUrl }}')">
+                <h2 class="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <i data-lucide="nfc" class="w-4 h-4" style="color: var(--color-primary);"></i>
+                    Gravar em tag NFC
+                </h2>
+
+                <p class="text-xs text-gray-500 mb-3 leading-relaxed">
+                    Grave o link do seu cartão em uma <strong>tag NFC física</strong> (adesivo ou cartão com chip NFC,
+                    vendido separadamente em lojas de eletrônicos ou online). Depois de gravada, qualquer pessoa com um
+                    celular Android pode encostar o aparelho na tag para abrir seu cartão digital — sem precisar
+                    instalar nenhum aplicativo.
+                </p>
+
+                <div class="rounded-lg bg-gray-50 border border-gray-200 p-3 mb-4">
+                    <p class="text-xs font-semibold text-gray-600 mb-1.5">Como usar:</p>
+                    <ol class="text-xs text-gray-500 list-decimal list-inside space-y-1">
+                        <li>Tenha em mãos uma tag NFC em branco (compatível com NDEF, ex: NTAG213/215/216).</li>
+                        <li>Abra esta página pelo navegador <strong>Chrome no seu celular Android</strong> (com o NFC ativado nas configurações do aparelho).</li>
+                        <li>Toque em "Gravar agora" e encoste a tag na parte de trás do celular quando solicitado.</li>
+                        <li>Pronto! Cole a tag em cartões de visita, crachás, balcões ou onde preferir.</li>
+                    </ol>
+                </div>
+
+                <button @click="write()" :disabled="writing"
+                        class="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-lg text-white transition hover:opacity-90 disabled:opacity-60"
+                        style="background-color: var(--color-primary);">
+                    <i data-lucide="nfc" class="w-4 h-4"></i>
+                    <span x-text="buttonLabel"></span>
+                </button>
+
+                <p class="text-xs mt-2" :class="statusClass" x-text="statusText" x-show="statusText"></p>
+
+                <p class="text-xs text-gray-400 mt-3 leading-relaxed">
+                    <i data-lucide="info" class="w-3 h-3 inline-block align-text-bottom"></i>
+                    Disponível apenas no Chrome/Edge para Android com NFC. Não funciona no iPhone nem em navegadores
+                    de computador — nesses casos, use o link ou o QR Code acima. A tag, uma vez gravada, funciona em
+                    qualquer celular com NFC, mesmo sem o app instalado.
+                </p>
+            </div>
+
         </div>
     </div>
 
@@ -85,6 +126,38 @@
             msg.classList.remove('hidden');
             setTimeout(() => msg.classList.add('hidden'), 3000);
         });
+    }
+
+    function nfcWriter(cardUrl) {
+        return {
+            writing: false,
+            buttonLabel: 'Gravar agora',
+            statusText: '',
+            statusClass: 'text-gray-500',
+            async write() {
+                if (!('NDEFReader' in window)) {
+                    this.statusText = 'Seu navegador não suporta gravação NFC. Use o Chrome no Android.';
+                    this.statusClass = 'text-amber-600';
+                    return;
+                }
+                this.writing = true;
+                this.buttonLabel = 'Aguardando...';
+                this.statusText = 'Aproxime a tag NFC da parte de trás do celular...';
+                this.statusClass = 'text-gray-500';
+                try {
+                    const writer = new NDEFReader();
+                    await writer.write({ records: [{ recordType: 'url', data: cardUrl }] });
+                    this.statusText = '✓ Tag gravada com sucesso! Aproxime qualquer celular Android dela para abrir seu cartão.';
+                    this.statusClass = 'text-green-600';
+                } catch (err) {
+                    this.statusText = 'Não foi possível gravar. Verifique se o NFC está ativado e aproxime uma tag vazia.';
+                    this.statusClass = 'text-red-600';
+                } finally {
+                    this.writing = false;
+                    this.buttonLabel = 'Gravar agora';
+                }
+            }
+        };
     }
     </script>
 </x-app-layout>

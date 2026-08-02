@@ -25,11 +25,14 @@
         </div>
 
         {{-- Editar slug --}}
-        <div>
-            <label class="text-xs font-medium text-gray-600">Link do perfil</label>
+        <div x-data="{ len: {{ mb_strlen($slug) }} }">
+            <div class="flex items-center justify-between">
+                <label class="text-xs font-medium text-gray-600">Link do perfil</label>
+                <span class="text-[11px] tabular-nums" :class="len > 50 ? 'text-red-500' : 'text-gray-400'" x-text="len + '/50'"></span>
+            </div>
             <div class="flex items-center mt-1 rounded-lg border border-gray-300 bg-white overflow-hidden">
                 <span class="px-3 py-2 text-xs text-gray-400 bg-gray-50 border-r border-gray-300 shrink-0 whitespace-nowrap">/u/</span>
-                <input wire:model="slug" type="text"
+                <input wire:model="slug" @input="len = $event.target.value.length" type="text" maxlength="50"
                        class="flex-1 px-3 py-2 text-sm focus:outline-none bg-white"
                        placeholder="seu-nome">
                 <a href="{{ route('card.show', $card->slug) }}" target="_blank"
@@ -38,7 +41,7 @@
                 </a>
             </div>
             @error('slug')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
-            <p class="text-xs text-gray-400 mt-1">Apenas letras minúsculas, números e hífens. Mín. 3 caracteres.</p>
+            <p class="text-xs text-gray-400 mt-1">Apenas letras minúsculas, números e hífens (sem espaços ou acentos). Mín. 3, máx. 50 caracteres.</p>
             <p class="text-xs text-amber-600 mt-1 flex items-center gap-1">
                 <i data-lucide="alert-triangle" class="w-3 h-3 shrink-0"></i>
                 Alterar o link invalida QR Codes e links já compartilhados.
@@ -132,9 +135,10 @@
                 </div>
                 <label class="block">
                     <span class="sr-only">Escolher foto de perfil</span>
-                    <input wire:model="profile_photo_upload" type="file" accept="image/*"
+                    <input wire:model="profile_photo_upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"
                            class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
                 </label>
+                <p class="text-[11px] text-gray-400">Formatos aceitos: JPG, PNG, WEBP, GIF ou BMP. Tamanho máximo: 2 MB.</p>
                 @error('profile_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
                 <div wire:loading wire:target="profile_photo_upload" class="text-[11px] text-gray-400">Processando...</div>
             </div>
@@ -163,15 +167,19 @@
                 </div>
                 <label class="block">
                     <span class="sr-only">Escolher foto de capa</span>
-                    <input wire:model="cover_photo_upload" type="file" accept="image/*"
+                    <input wire:model="cover_photo_upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp"
                            class="block w-full text-[11px] text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[11px] file:font-medium file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 cursor-pointer">
                 </label>
+                <p class="text-[11px] text-gray-400">Formatos aceitos: JPG, PNG, WEBP, GIF ou BMP. Tamanho máximo: 4 MB.</p>
                 @error('cover_photo_upload') <p class="text-[11px] text-red-500">{{ $message }}</p> @enderror
                 <div wire:loading wire:target="cover_photo_upload" class="text-[11px] text-gray-400">Processando...</div>
             </div>
 
         </div>
-        <p class="text-[11px] text-gray-400">As fotos são salvas automaticamente ao clicar em "Salvar alterações".</p>
+        <p class="text-[11px] text-gray-400 flex items-center gap-1">
+            <i data-lucide="info" class="w-3 h-3 shrink-0"></i>
+            As fotos são salvas automaticamente ao clicar em "Salvar alterações". Fotos maiores são redimensionadas automaticamente.
+        </p>
     </div>
 
     {{-- Identificação --}}
@@ -182,33 +190,54 @@
         </h3>
 
         <div class="grid grid-cols-1 gap-4">
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Nome de exibição *</label>
-                <input wire:model="display_name" type="text" maxlength="80"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($display_name) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Nome de exibição *</label>
+                    <span class="text-[11px] tabular-nums" :class="len > 70 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/80'"></span>
+                </div>
+                <input wire:model="display_name" @input="len = $event.target.value.length" type="text" maxlength="80"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
                 @error('display_name')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Cargo / Título</label>
-                    <input wire:model="title" type="text" maxlength="80"
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($title) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">Cargo / Título</label>
+                        <span class="text-[11px] tabular-nums" :class="len > 70 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/80'"></span>
+                    </div>
+                    <input wire:model="title" @input="len = $event.target.value.length" type="text" maxlength="80"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                     @error('title')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
-                <div class="space-y-1">
-                    <label class="text-xs font-medium text-gray-600">Empresa</label>
-                    <input wire:model="company" type="text" maxlength="80"
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($company) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">Empresa</label>
+                        <span class="text-[11px] tabular-nums" :class="len > 70 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/80'"></span>
+                    </div>
+                    <input wire:model="company" @input="len = $event.target.value.length" type="text" maxlength="80"
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                     @error('company')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
 
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Sobre (bio)</label>
-                <textarea wire:model="bio" rows="3" maxlength="500"
-                          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-none"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($bio) }}, expanded: false }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Sobre (bio)</label>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[11px] tabular-nums" :class="len > 450 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/500'"></span>
+                        <button type="button" @click="expanded = !expanded"
+                                class="text-gray-400 hover:text-gray-600" :title="expanded ? 'Diminuir campo' : 'Aumentar campo'">
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5" x-show="!expanded"></i>
+                            <i data-lucide="chevron-up" class="w-3.5 h-3.5" x-show="expanded" x-cloak></i>
+                        </button>
+                    </div>
+                </div>
+                <textarea wire:model="bio" @input="len = $event.target.value.length" maxlength="500"
+                          :rows="expanded ? 10 : 3"
+                          class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 resize-y transition-all"
                           placeholder="Apresente-se brevemente..."></textarea>
+                <p class="text-[11px] text-gray-400">Use a seta para expandir o campo, ou arraste o canto inferior direito para redimensionar.</p>
                 @error('bio')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
         </div>
@@ -222,39 +251,57 @@
         </h3>
 
         <div class="grid grid-cols-1 gap-3">
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Celular / WhatsApp</label>
-                <input wire:model="contact_phone" type="text" maxlength="20"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($contact_phone) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Celular / WhatsApp</label>
+                    <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/20'"></span>
+                </div>
+                <input wire:model="contact_phone" @input="len = $event.target.value.length" type="text" maxlength="20"
                        placeholder="(69) 99999-9999"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                <p class="text-[11px] text-gray-400">Inclua o DDD. Este número também é usado como WhatsApp no cartão de contato (.vcf).</p>
                 @error('contact_phone')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Telefone fixo</label>
-                <input wire:model="contact_landline" type="text" maxlength="20"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($contact_landline) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Telefone fixo</label>
+                    <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/20'"></span>
+                </div>
+                <input wire:model="contact_landline" @input="len = $event.target.value.length" type="text" maxlength="20"
                        placeholder="(69) 3222-0000"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                 @error('contact_landline')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">E-mail de contato</label>
-                <input wire:model="contact_email" type="email" maxlength="255"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($contact_email) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">E-mail de contato</label>
+                    <span class="text-[11px] tabular-nums" :class="len > 240 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/255'"></span>
+                </div>
+                <input wire:model="contact_email" @input="len = $event.target.value.length" type="email" maxlength="255"
+                       placeholder="voce@email.com"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                 @error('contact_email')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Website</label>
-                <input wire:model="website" type="url" maxlength="255"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($website) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Website</label>
+                    <span class="text-[11px] tabular-nums" :class="len > 240 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/255'"></span>
+                </div>
+                <input wire:model="website" @input="len = $event.target.value.length" type="url" maxlength="255"
                        placeholder="https://seusite.com.br"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                <p class="text-[11px] text-gray-400">Inclua "https://" no início do endereço.</p>
                 @error('website')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600 flex items-center gap-1.5">
-                    <i data-lucide="map-pin" class="w-3.5 h-3.5" style="color: var(--color-primary);"></i>
-                    Endereço / Localização
-                </label>
-                <input wire:model="address" type="text" maxlength="255"
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($address) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600 flex items-center gap-1.5">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5" style="color: var(--color-primary);"></i>
+                        Endereço / Localização
+                    </label>
+                    <span class="text-[11px] tabular-nums" :class="len > 240 ? 'text-amber-600' : 'text-gray-400'" x-text="len + '/255'"></span>
+                </div>
+                <input wire:model="address" @input="len = $event.target.value.length" type="text" maxlength="255"
                        placeholder="Ex: Av. Lauro Sodré, 1234, Porto Velho, RO"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
                 @if ($card->address)
@@ -270,11 +317,68 @@
                 @endif
                 @error('address')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
-            <div class="space-y-1">
-                <label class="text-xs font-medium text-gray-600">Chave PIX</label>
-                <input wire:model="pix_key" type="text" maxlength="100"
+            <div class="grid grid-cols-2 gap-3">
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($city) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">Cidade</label>
+                        <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/100'"></span>
+                    </div>
+                    <input wire:model="city" @input="len = $event.target.value.length" type="text" maxlength="100"
+                           placeholder="Porto Velho"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    @error('city')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($state) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">Estado (UF)</label>
+                        <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/2'"></span>
+                    </div>
+                    <input wire:model="state" @input="len = $event.target.value.length" type="text" maxlength="2"
+                           placeholder="RO"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm uppercase focus:outline-none focus:border-blue-500">
+                    @error('state')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($zip_code) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">CEP</label>
+                        <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/9'"></span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input wire:model="zip_code" @input="len = $event.target.value.length" wire:keydown.enter.prevent="buscarCep" type="text" maxlength="9"
+                               placeholder="76800-000"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                        <button type="button" wire:click="buscarCep" wire:loading.attr="disabled" wire:target="buscarCep"
+                                class="shrink-0 flex items-center gap-1 text-xs font-medium px-3 py-2 rounded-lg border border-gray-300 text-gray-600 transition hover:bg-gray-50 disabled:opacity-60">
+                            <span wire:loading.remove wire:target="buscarCep">Buscar</span>
+                            <span wire:loading wire:target="buscarCep">...</span>
+                        </button>
+                    </div>
+                    @if ($cepErro)
+                        <p class="text-xs text-amber-600">{{ $cepErro }}</p>
+                    @endif
+                    <p class="text-[11px] text-gray-400">Formato: 00000-000. Preenche cidade e estado automaticamente.</p>
+                    @error('zip_code')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+                <div class="space-y-1" x-data="{ len: {{ mb_strlen($country) }} }">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-medium text-gray-600">País</label>
+                        <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/100'"></span>
+                    </div>
+                    <input wire:model="country" @input="len = $event.target.value.length" type="text" maxlength="100"
+                           placeholder="Brasil"
+                           class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                    @error('country')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
+                </div>
+            </div>
+            <div class="space-y-1" x-data="{ len: {{ mb_strlen($pix_key) }} }">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-medium text-gray-600">Chave PIX</label>
+                    <span class="text-[11px] tabular-nums text-gray-400" x-text="len + '/100'"></span>
+                </div>
+                <input wire:model="pix_key" @input="len = $event.target.value.length" type="text" maxlength="100"
                        placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"
                        class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
+                <p class="text-[11px] text-gray-400">Aceita CPF, CNPJ, e-mail, telefone ou chave aleatória (UUID).</p>
                 @error('pix_key')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
             </div>
         </div>
@@ -301,6 +405,7 @@
                         <input wire:model.live="brand_color_primary" type="text" maxlength="7"
                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:border-blue-500">
                     </div>
+                    <p class="text-[11px] text-gray-400">Formato hexadecimal, ex: #003049.</p>
                     @error('brand_color_primary')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
                 <div class="space-y-2">
@@ -312,6 +417,7 @@
                         <input wire:model.live="brand_color_button" type="text" maxlength="7"
                                class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono uppercase focus:outline-none focus:border-blue-500">
                     </div>
+                    <p class="text-[11px] text-gray-400">Formato hexadecimal, ex: #D62828.</p>
                     @error('brand_color_button')<p class="text-xs text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
