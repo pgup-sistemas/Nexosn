@@ -601,17 +601,26 @@ a { text-decoration: none; }
 
 /* Barra de URL tappable */
 .share-url-bar {
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px;
     background: #F8F8F7; border: 1.5px solid #E0E0DE; border-radius: 14px;
     padding: 14px 18px; margin-top: 40px; max-width: 480px; margin-left: auto; margin-right: auto;
 }
-.share-url-text { flex: 1; font-size: 15px; font-weight: 600; color: #003049; }
+.share-url-text {
+    flex: 1 1 auto; min-width: 0; font-size: 15px; font-weight: 600; color: #003049;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .share-url-btn {
     padding: 8px 18px; border-radius: 10px; background: #003049; color: #FCBF49;
     font-size: 13px; font-weight: 700; cursor: pointer; border: none; white-space: nowrap;
-    display: flex; align-items: center; gap: 6px; transition: all .15s;
+    display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s;
 }
 .share-url-btn:hover { background: #002035; }
+
+@media (max-width: 480px) {
+    .share-url-bar { padding: 12px 14px; }
+    .share-url-text { font-size: 13px; }
+    .share-url-btn { flex: 1 1 100%; }
+}
 
 /* Benefícios rápidos */
 .benefits-strip {
