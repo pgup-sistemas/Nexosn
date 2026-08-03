@@ -1,8 +1,7 @@
 @props(['card'])
 @php $items = $card->campaignTimelineItems; @endphp
 @if ($items->isNotEmpty())
-<div class="cs">
-    <h2 class="cs-title"><i data-lucide="history" class="w-4 h-4"></i> Linha do Tempo</h2>
+<x-card.section.collapsible icon="history" title="Linha do Tempo">
     <div class="campaign-timeline">
         @foreach ($items as $item)
             <div class="campaign-timeline-item">
@@ -19,5 +18,5 @@
             </div>
         @endforeach
     </div>
-</div>
+</x-card.section.collapsible>
 @endif

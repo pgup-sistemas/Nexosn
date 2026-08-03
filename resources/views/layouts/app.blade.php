@@ -143,6 +143,10 @@
                  :class="collapsed ? 'px-0' : 'px-2'">
 
                 @php
+                $activeProfileModule = auth()->user()->card
+                    ? app(\App\Services\CardTemplateResolver::class)->resolve(auth()->user()->card)['requires_profile']
+                    : null;
+
                 $navItems = [
                     ['route' => 'dashboard',              'routeIs' => 'dashboard',              'icon' => 'layout-dashboard', 'label' => 'Visão Geral'],
                     ['route' => 'dashboard.card',         'routeIs' => 'dashboard.card',         'icon' => 'credit-card',      'label' => 'Meu Cartão'],
@@ -152,13 +156,36 @@
                     ['route' => 'dashboard.schedule',     'routeIs' => 'dashboard.schedule',     'icon' => 'calendar',         'label' => 'Agenda'],
                     ['route' => 'dashboard.appointments', 'routeIs' => 'dashboard.appointments', 'icon' => 'clock',            'label' => 'Agendamentos'],
                     ['route' => 'dashboard.services',     'routeIs' => 'dashboard.services',     'icon' => 'receipt',          'label' => 'Serviços / PIX'],
+                ];
+
+                if ($activeProfileModule && ($moduleNav = config("dashboard_nav_modules.{$activeProfileModule}"))) {
+                    $navItems[] = [
+                        'divider' => true,
+                        'label' => $moduleNav['label'] ?? 'Recursos do template',
+                        'hint' => 'Exclusivo do estilo de cartão selecionado — some se você trocar o template',
+                    ];
+                    foreach ($moduleNav['items'] as $moduleItem) {
+                        $navItems[] = array_merge($moduleItem, ['routeIs' => $moduleItem['route']]);
+                    }
+                }
+
+                $navItems = array_merge($navItems, [
                     ['route' => 'dashboard.share',        'routeIs' => 'dashboard.share',        'icon' => 'share-2',          'label' => 'Compartilhar'],
                     ['route' => 'dashboard.plan',         'routeIs' => 'dashboard.plan',         'icon' => 'zap',              'label' => 'Plano'],
                     ['route' => 'dashboard.settings',     'routeIs' => 'dashboard.settings',     'icon' => 'settings',         'label' => 'Configurações'],
-                ];
+                ]);
                 @endphp
 
                 @foreach ($navItems as $item)
+                @if (!empty($item['divider']))
+                <div class="px-3 mt-3 mb-1.5 flex items-center gap-1.5"
+                     :style="collapsed ? 'display:none' : ''"
+                     title="{{ $item['hint'] ?? '' }}">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/40">{{ $item['label'] }}</span>
+                    <i data-lucide="lock" class="w-2.5 h-2.5 text-white/30"></i>
+                </div>
+                @continue
+                @endif
                 @php $isActive = request()->routeIs($item['routeIs']); @endphp
                 <a href="{{ route($item['route']) }}" wire:navigate
                    class="relative flex items-center gap-3 rounded-lg text-sm font-medium group mb-0.5"

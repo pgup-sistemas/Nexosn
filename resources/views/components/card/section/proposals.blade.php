@@ -1,8 +1,7 @@
 @props(['card'])
 @php $proposals = $card->campaignProposals->where('is_active', true); @endphp
 @if ($proposals->isNotEmpty())
-<div class="cs">
-    <h2 class="cs-title"><i data-lucide="list-checks" class="w-4 h-4"></i> Propostas</h2>
+<x-card.section.collapsible icon="list-checks" title="Propostas">
     <div class="campaign-proposal-list">
         @foreach ($proposals->groupBy(fn ($p) => $p->category?->name ?? 'Geral') as $categoryName => $items)
             <div class="campaign-proposal-group">
@@ -33,5 +32,5 @@
             </div>
         @endforeach
     </div>
-</div>
+</x-card.section.collapsible>
 @endif

@@ -9,9 +9,21 @@
 @section('card_colors')
     @include('card.templates._campaign-styles')
     <style>
-        /* Retrato: sem capa, retrato grande e central, sem margem negativa */
+        /* Retrato ("santinho digital"): foto grande, retangular, de corpo/rosto em
+           destaque ocupando a largura do cartão — não é avatar circular. */
         .campaign-tpl-retrato .campaign-cover { display: none; }
-        .campaign-tpl-retrato .campaign-portrait { width: 148px; height: 148px; margin: 8px auto 12px; border-width: 6px; }
+        .campaign-tpl-retrato .campaign-portrait {
+            width: calc(100% + 32px);
+            height: auto;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            object-position: top center;
+            margin: -16px -16px 14px -16px;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            display: block;
+        }
         .campaign-tpl-retrato .campaign-name { font-size: 24px; }
     </style>
 @endsection

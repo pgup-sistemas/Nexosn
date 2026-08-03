@@ -14,6 +14,19 @@
     .cs-title { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--ui-heading); margin: 0 0 12px; text-transform: uppercase; letter-spacing: .03em; }
     .cs-title i { color: var(--card-primary); }
 
+    /* Cards recolhíveis (clicar no título esconde/mostra o conteúdo) */
+    .cs-toggle { background: none; border: none; padding: 0; margin: 0; width: 100%; font: inherit; text-align: left; cursor: pointer; }
+    .cs-toggle .cs-chevron { margin-left: auto; color: var(--ui-label); transition: transform .2s ease; }
+    .cs-collapsible.cs-collapsed .cs-toggle { margin-bottom: 0; }
+    .cs-collapsible.cs-collapsed .cs-chevron { transform: rotate(-90deg); }
+    .cs-collapsible .cs-body { overflow: hidden; }
+    .cs-collapsible.cs-collapsed .cs-body { display: none; }
+
+    /* Formulário de contato reaproveita o card padrão — remove o cabeçalho e o
+       fundo/borda internos dele para não duplicar o título do card recolhível. */
+    .cs-collapsible .cs-body .contact-form-heading { display: none; }
+    .campaign-contact-form-wrap > div { background: transparent !important; border-top: none !important; padding: 0 !important; }
+
     /* Header */
     .cs-campaign-header { padding: 0; overflow: hidden; }
     .campaign-cover { height: 140px; background-size: cover; background-position: center; }
@@ -85,3 +98,16 @@
     .campaign-link-item { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 12px; background: var(--ui-bg); text-decoration: none; color: var(--ui-heading); font-weight: 600; font-size: 13px; }
     .campaign-link-item i { color: var(--card-primary); }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cs-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var card = btn.closest('.cs-collapsible');
+            if (!card) return;
+            var collapsed = card.classList.toggle('cs-collapsed');
+            btn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        });
+    });
+});
+</script>

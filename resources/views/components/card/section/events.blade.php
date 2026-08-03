@@ -1,8 +1,7 @@
 @props(['card'])
 @php $events = $card->campaignEvents->where('is_active', true)->where('event_date', '>=', now()->startOfDay()); @endphp
 @if ($events->isNotEmpty())
-<div class="cs">
-    <h2 class="cs-title"><i data-lucide="calendar-days" class="w-4 h-4"></i> Agenda</h2>
+<x-card.section.collapsible icon="calendar-days" title="Agenda">
     <div class="campaign-event-list">
         @foreach ($events as $event)
             <div class="campaign-event-item">
@@ -30,5 +29,5 @@
             </div>
         @endforeach
     </div>
-</div>
+</x-card.section.collapsible>
 @endif

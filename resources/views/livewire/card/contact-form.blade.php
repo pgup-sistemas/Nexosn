@@ -1,5 +1,5 @@
 <div class="px-5 py-5 bg-gray-50 border-t border-gray-100">
-    <div class="flex items-center gap-2 text-sm font-semibold mb-4" style="color: var(--card-primary);">
+    <div class="contact-form-heading flex items-center gap-2 text-sm font-semibold mb-4" style="color: var(--card-primary);">
         <i data-lucide="send" class="w-4 h-4"></i>
         Enviar mensagem
     </div>

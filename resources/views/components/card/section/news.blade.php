@@ -1,8 +1,7 @@
 @props(['card'])
 @php $items = $card->campaignNews->where('is_active', true); @endphp
 @if ($items->isNotEmpty())
-<div class="cs">
-    <h2 class="cs-title"><i data-lucide="newspaper" class="w-4 h-4"></i> Notícias</h2>
+<x-card.section.collapsible icon="newspaper" title="Notícias">
     <div class="campaign-news-list">
         @foreach ($items as $news)
             <div class="campaign-news-item">
@@ -21,5 +20,5 @@
             </div>
         @endforeach
     </div>
-</div>
+</x-card.section.collapsible>
 @endif
