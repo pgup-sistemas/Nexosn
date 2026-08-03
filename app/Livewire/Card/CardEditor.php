@@ -181,7 +181,7 @@ class CardEditor extends Component
             'country'            => 'nullable|string|max:100',
             'website'            => 'nullable|url|max:255',
             'pix_key'            => 'nullable|string|max:100',
-            'template'           => 'nullable|in:default,dark',
+            'template'           => 'nullable|in:' . implode(',', array_keys(config('card_templates', []))),
             'brand_color_primary'=> 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
             'brand_color_button' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ]));

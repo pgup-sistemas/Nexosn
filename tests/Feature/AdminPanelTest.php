@@ -258,4 +258,47 @@ class AdminPanelTest extends TestCase
         $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\PhotosRelationManager::class, $relations);
         $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\ServicesRelationManager::class, $relations);
     }
+
+    public function test_relation_managers_de_campanha_renderizam_com_dados(): void
+    {
+        $titular = $this->makeUserWithCard();
+        $card = $titular->card;
+
+        $category = $card->campaignProposalCategories()->create(['name' => 'Saúde', 'order' => 0]);
+        $card->campaignProposals()->create(['title' => 'Proposta', 'category_id' => $category->id, 'order' => 0]);
+        $card->campaignNews()->create(['title' => 'Notícia', 'published_at' => now(), 'order' => 0]);
+        $card->campaignTimelineItems()->create(['occurred_on' => '2020-01-01', 'title' => 'Evento histórico', 'order' => 0]);
+        $card->campaignTeamMembers()->create(['name' => 'Membro', 'order' => 0]);
+        $card->campaignEvents()->create(['title' => 'Comitê', 'event_date' => now()->addDays(3), 'order' => 0]);
+        $card->files()->create(['label' => 'Plano', 'category' => 'management_plan', 'file_path' => 'x.pdf', 'order' => 0]);
+
+        $admin = $this->makeAdmin();
+        $this->actingAs($admin);
+
+        foreach ([
+            \App\Filament\Resources\CardResource\RelationManagers\CampaignProposalsRelationManager::class,
+            \App\Filament\Resources\CardResource\RelationManagers\CampaignNewsRelationManager::class,
+            \App\Filament\Resources\CardResource\RelationManagers\CampaignTimelineRelationManager::class,
+            \App\Filament\Resources\CardResource\RelationManagers\CampaignTeamRelationManager::class,
+            \App\Filament\Resources\CardResource\RelationManagers\CampaignEventsRelationManager::class,
+            \App\Filament\Resources\CardResource\RelationManagers\CardFilesRelationManager::class,
+        ] as $managerClass) {
+            \Livewire\Livewire::test($managerClass, [
+                'ownerRecord' => $card,
+                'pageClass' => \App\Filament\Resources\CardResource\Pages\EditCard::class,
+            ])->assertSuccessful();
+        }
+    }
+
+    public function test_card_resource_expoe_relation_managers_de_campanha(): void
+    {
+        $relations = CardResource::getRelations();
+
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CampaignProposalsRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CampaignNewsRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CampaignTimelineRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CampaignTeamRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CampaignEventsRelationManager::class, $relations);
+        $this->assertContains(\App\Filament\Resources\CardResource\RelationManagers\CardFilesRelationManager::class, $relations);
+    }
 }

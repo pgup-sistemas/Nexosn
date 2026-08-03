@@ -1,5 +1,48 @@
 # NEXOSN — Roadmap de Produto
-> Atualizado: 2026-07 | PageUp Sistemas
+> Atualizado: 2026-08-02 | PageUp Sistemas
+
+---
+
+## 🗳️ Template de Campanha — Roadmap de Implementação (2026-08)
+
+> Ver auditoria completa em [`docs/auditoria-template-campanha.md`](./auditoria-template-campanha.md).
+> Decisões confirmadas com o usuário em 2026-08-02: (1) refatorar o sistema de templates antes de
+> construir o módulo de campanha; (2) agenda de campanha (eventos com local/mapa) vira tabela
+> própria `campaign_events`, separada de `card_appointments` (agendamento 1:1 com o titular).
+
+| Fase | Entrega | Status |
+|---|---|---|
+| A | Registro de templates (`config/card_templates.php` + `CardTemplateResolver`) + campo `template` exposto no admin. Componentização por seção fica para a Fase G, quando houver um 2º consumidor real (evita abstração prematura) | ✅ Concluído |
+| B | Perfil de Campanha (`campaign_profiles` + `CampaignProfile` + `ProfileEditor` Livewire + gate `check.plan:campanha`) | ✅ Concluído |
+| C | Propostas + categorias (`campaign_proposals`) + arquivos genéricos (`card_files`), com validação de MIME real de PDF e allow-list de domínio de vídeo (YouTube/Vimeo) | ✅ Concluído |
+| D | Notícias (`campaign_news`) + Linha do Tempo (`campaign_timeline_items`) | ✅ Concluído |
+| E | Equipe / Chapa (`campaign_team_members`) | ✅ Concluído |
+| F | Agenda estendida (`campaign_events`, tabela própria — decisão R3 da auditoria) + formulário com finalidade configurável (`contact_messages.purpose`) | ✅ Concluído |
+| G | 7 templates visuais de campanha completos (hero, institucional, retrato, banner, minimalista, chapa, moderno), todos sobre a mesma biblioteca de 9 componentes de seção reutilizáveis. Verificados manualmente no navegador contra MySQL real, não só via `php artisan test` (SQLite não pega bugs de tamanho de coluna) | ✅ Concluído |
+| H | Admin (Filament): 6 novos Relation Managers em `CardResource` (Propostas, Notícias, Linha do Tempo, Equipe, Agenda, Arquivos) + template exposto no form. Testes automatizados cobrindo todos. QA mobile-first e checklist de deploy (`optimize`/`build`) ficam para quando você decidir fazer o deploy | 🔶 Parcial |
+
+Cada fase termina com `php artisan test` e aprovação do usuário antes de avançar (fluxo padrão do
+[`CLAUDE.md`](../CLAUDE.md) §7).
+
+**Conformidade jurídica para uso comercial (2026-08-03)**: adicionados (1) seção 10 "Uso em
+campanhas eleitorais e eleições internas" em [Termos de Uso](../resources/views/legal/termos.blade.php),
+deixando explícito que o titular é responsável pelo conteúdo e que eleições oficiais devem observar
+a legislação e as normas do TSE; (2) campo opcional `legal_responsible_name`/`legal_responsible_document`
+em `campaign_profiles`, exibido no rodapé do cartão público quando preenchido; (3) aviso de
+conformidade no editor de perfil do dashboard, com link direto para a seção dos Termos. Nesse
+processo também foi corrigido um bug pré-existente em `termos.blade.php`: o arquivo continha duas
+cópias completas do documento coladas em sequência (duas declarações `@section('hero')`/`@section('content')`),
+das quais só a segunda realmente renderizava — a primeira era código morto, removido nesta limpeza.
+
+**Bug encontrado e corrigido durante homologação visual (2026-08-02)**: `cards.template` era
+`varchar(20)`; a chave `campaign-institucional` (22 caracteres) truncava/falhava no MySQL real, mas
+passava despercebida em `php artisan test` porque a suíte roda em SQLite in-memory
+(`phpunit.xml`), que não impõe limite de VARCHAR. Corrigido com a migration
+`2026_08_02_000009_widen_template_column_on_cards_table.php` (coluna ampliada para `varchar(40)`) e
+coberto por `tests/Feature/CardTemplateColumnLengthTest.php`, que inspeciona a config diretamente
+em vez de depender do banco de teste. **Lição**: mudanças de schema que envolvem strings/enums
+devem ser conferidas contra o MySQL real antes de dar como concluídas — a suíte automatizada sozinha
+não é suficiente para essa classe de bug.
 
 ---
 

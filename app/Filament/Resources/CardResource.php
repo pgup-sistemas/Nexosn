@@ -3,6 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CardResource\Pages;
+use App\Filament\Resources\CardResource\RelationManagers\CampaignEventsRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\CampaignNewsRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\CampaignProposalsRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\CampaignTeamRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\CampaignTimelineRelationManager;
+use App\Filament\Resources\CardResource\RelationManagers\CardFilesRelationManager;
 use App\Filament\Resources\CardResource\RelationManagers\LinksRelationManager;
 use App\Filament\Resources\CardResource\RelationManagers\PhotosRelationManager;
 use App\Filament\Resources\CardResource\RelationManagers\ServicesRelationManager;
@@ -35,6 +41,11 @@ class CardResource extends Resource
             Forms\Components\TextInput::make('display_name')->label('Nome no cartão')->required(),
             Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true),
             Forms\Components\Toggle::make('show_watermark')->label('Mostrar marca d\'água')->default(true),
+            Forms\Components\Select::make('template')
+                ->label('Template')
+                ->options(fn (\App\Services\CardTemplateResolver $resolver) => $resolver->options())
+                ->default('default')
+                ->required(),
         ]);
     }
 
@@ -101,6 +112,12 @@ class CardResource extends Resource
             LinksRelationManager::class,
             PhotosRelationManager::class,
             ServicesRelationManager::class,
+            CampaignProposalsRelationManager::class,
+            CampaignNewsRelationManager::class,
+            CampaignTimelineRelationManager::class,
+            CampaignTeamRelationManager::class,
+            CampaignEventsRelationManager::class,
+            CardFilesRelationManager::class,
         ];
     }
 

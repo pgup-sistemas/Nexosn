@@ -60,6 +60,46 @@ class Card extends Model
         return $this->hasOne(CardSchedule::class);
     }
 
+    public function campaignProfile(): HasOne
+    {
+        return $this->hasOne(CampaignProfile::class);
+    }
+
+    public function campaignProposals(): HasMany
+    {
+        return $this->hasMany(CampaignProposal::class)->orderBy('order');
+    }
+
+    public function campaignProposalCategories(): HasMany
+    {
+        return $this->hasMany(CampaignProposalCategory::class)->orderBy('order');
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(CardFile::class)->orderBy('order');
+    }
+
+    public function campaignNews(): HasMany
+    {
+        return $this->hasMany(CampaignNews::class)->orderByDesc('published_at');
+    }
+
+    public function campaignTimelineItems(): HasMany
+    {
+        return $this->hasMany(CampaignTimelineItem::class)->orderBy('occurred_on');
+    }
+
+    public function campaignTeamMembers(): HasMany
+    {
+        return $this->hasMany(CampaignTeamMember::class)->orderBy('order');
+    }
+
+    public function campaignEvents(): HasMany
+    {
+        return $this->hasMany(CampaignEvent::class)->orderBy('event_date');
+    }
+
     public function getPrimaryColorAttribute(): string
     {
         $user = $this->relationLoaded('user') ? $this->user : $this->user()->first();

@@ -15,6 +15,15 @@ class ContactForm extends Component
     public Card $card;
     public bool $sent = false;
 
+    /**
+     * Lista de finalidades disponíveis no formulário; vazia = campo oculto.
+     * Configurável por template (ex: campanha passa voluntario/apoiador/sugestao).
+     */
+    public array $purposeOptions = [];
+
+    #[Validate('nullable|string|max:30')]
+    public string $purpose = '';
+
     #[Validate('required|string|max:100')]
     public string $senderName = '';
 
@@ -29,6 +38,12 @@ class ContactForm extends Component
 
     // Honeypot — deve estar vazio
     public string $website = '';
+
+    public function mount(Card $card, array $purposeOptions = []): void
+    {
+        $this->card = $card;
+        $this->purposeOptions = $purposeOptions;
+    }
 
     public function submit(Request $request): void
     {
@@ -55,6 +70,7 @@ class ContactForm extends Component
 
         $msg = ContactMessage::create([
             'card_id'      => $this->card->id,
+            'purpose'      => $this->purposeOptions ? ($this->purpose ?: null) : null,
             'sender_name'  => $this->senderName,
             'sender_email' => $this->senderEmail,
             'sender_phone' => $this->senderPhone ?: null,
@@ -64,7 +80,7 @@ class ContactForm extends Component
 
         SendContactMessage::dispatch($msg);
 
-        $this->reset(['senderName', 'senderEmail', 'senderPhone', 'message']);
+        $this->reset(['senderName', 'senderEmail', 'senderPhone', 'message', 'purpose']);
         $this->sent = true;
     }
 

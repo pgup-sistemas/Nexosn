@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ContactMessage extends Model
 {
     protected $fillable = [
-        'card_id', 'sender_name', 'sender_email', 'sender_phone',
+        'card_id', 'purpose', 'sender_name', 'sender_email', 'sender_phone',
         'message', 'ip_address', 'read_at',
     ];
 

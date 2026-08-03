@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use App\Services\CardTemplateResolver;
 use App\Services\QrCodeService;
 use App\Services\VCardService;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ use Illuminate\Http\Response;
 
 class CardController extends Controller
 {
-    public function show(string $slug, QrCodeService $qrService)
+    public function show(string $slug, QrCodeService $qrService, CardTemplateResolver $templateResolver)
     {
         $card = Card::with(['user', 'links' => fn ($q) => $q->where('is_active', true), 'photos', 'schedule.slots', 'services' => fn ($q) => $q->where('is_active', true)])
             ->where('slug', $slug)
@@ -28,8 +29,16 @@ class CardController extends Controller
         // QR Code inline: evita requisição extra — funciona offline após 1ª carga
         $qrSvg = $qrService->generateSvg($card);
 
-        $view = $card->template === 'dark' ? 'card.show-dark' : 'card.show';
-        return view($view, compact('card', 'qrSvg'));
+        $resolved = $templateResolver->resolve($card);
+        if ($resolved['requires_profile'] === 'campaign') {
+            $card->load([
+                'campaignProfile', 'campaignProposals.category', 'campaignProposalCategories',
+                'campaignNews', 'campaignTimelineItems', 'campaignTeamMembers',
+                'campaignEvents', 'files',
+            ]);
+        }
+
+        return view($resolved['view'], compact('card', 'qrSvg'));
     }
 
     public function trackClick(string $slug, int $linkId): \Illuminate\Http\RedirectResponse

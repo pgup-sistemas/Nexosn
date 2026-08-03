@@ -16,12 +16,8 @@ class CheckPlan
             return redirect()->route('login');
         }
 
-        $allowed = match ($feature) {
-            'pro'      => $user->isPro() || $user->isOnTrial(),
-            'agenda'   => $user->isPro() || $user->isOnTrial(),
-            'messages' => $user->isPro() || $user->isOnTrial(),
-            default    => false,
-        };
+        $proGated = in_array($feature, config('plan_features', []), true);
+        $allowed = $proGated && ($user->isPro() || $user->isOnTrial());
 
         if (! $allowed) {
             return redirect()->route('dashboard.plan')

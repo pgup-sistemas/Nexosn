@@ -31,6 +31,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::view('appointments', 'dashboard.appointments')->name('appointments');
         Route::view('plan', 'dashboard.plan')->name('plan');
         Route::view('services', 'dashboard.services')->name('services');
+        Route::view('campanha/perfil', 'dashboard.campaign.profile')->name('campaign.profile')->middleware('check.plan:campanha');
+        Route::view('campanha/propostas', 'dashboard.campaign.proposals')->name('campaign.proposals')->middleware('check.plan:campanha');
+        Route::view('campanha/arquivos', 'dashboard.campaign.files')->name('campaign.files')->middleware('check.plan:campanha');
+        Route::view('campanha/noticias', 'dashboard.campaign.news')->name('campaign.news')->middleware('check.plan:campanha');
+        Route::view('campanha/linha-do-tempo', 'dashboard.campaign.timeline')->name('campaign.timeline')->middleware('check.plan:campanha');
+        Route::view('campanha/equipe', 'dashboard.campaign.team')->name('campaign.team')->middleware('check.plan:campanha');
+        Route::view('campanha/eventos', 'dashboard.campaign.events')->name('campaign.events')->middleware('check.plan:campanha');
         Route::get('share', [App\Http\Controllers\Dashboard\ShareController::class, 'index'])->name('share');
         Route::get('settings', [SettingsController::class, 'index'])->name('settings');
         Route::delete('settings/account', [SettingsController::class, 'destroyAccount'])->name('settings.account.destroy');
@@ -83,5 +90,7 @@ Route::get('/u/{slug}/link/{linkId}', [CardController::class, 'trackClick'])->na
 Route::get('/u/{card:slug}/servico/{service}/payload', [ServicePixController::class, 'payload'])->name('card.service.payload');
 Route::get('/u/{slug}/pagar/{service}', [ServicePixController::class, 'show'])->name('card.service.pay');
 Route::get('/u/{card:slug}/pix/payload', [ServicePixController::class, 'pixDinamico'])->name('card.pix.dinamico');
+Route::get('/u/{card:slug}/arquivo/{file}', [App\Http\Controllers\CardFileController::class, 'download'])->name('card.file.download');
+Route::get('/u/{card:slug}/proposta/{proposal}/pdf', [App\Http\Controllers\CardFileController::class, 'proposalPdf'])->name('card.proposal.pdf');
 
 require __DIR__.'/auth.php';

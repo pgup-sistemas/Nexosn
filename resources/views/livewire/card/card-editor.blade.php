@@ -99,7 +99,66 @@
                 </div>
             </button>
 
+            {{-- Campanha (Pro) --}}
+            @if ($isPro)
+                <button type="button" wire:click="$set('template', 'campaign-hero')"
+                        class="relative rounded-xl border-2 overflow-hidden text-left transition-all
+                               {{ $template === 'campaign-hero' ? 'border-[#D62828]' : 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="bg-white h-20 flex flex-col gap-1 p-2.5">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 mx-auto"></div>
+                        <div class="h-2 w-16 rounded bg-gray-200 mx-auto"></div>
+                        <div class="h-5 w-full rounded-lg mt-auto" style="background:#D62828;opacity:.15;"></div>
+                    </div>
+                    <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-700">Campanha — Hero</p>
+                            <p class="text-[10px] text-gray-400">Eleições / chapas</p>
+                        </div>
+                        @if ($template === 'campaign-hero')
+                        <i data-lucide="check-circle" class="w-4 h-4" style="color:#D62828;"></i>
+                        @endif
+                    </div>
+                </button>
+
+                <button type="button" wire:click="$set('template', 'campaign-institucional')"
+                        class="relative rounded-xl border-2 overflow-hidden text-left transition-all
+                               {{ $template === 'campaign-institucional' ? 'border-[#003049]' : 'border-gray-200 hover:border-gray-300' }}">
+                    <div class="bg-white h-20 flex flex-col gap-1 p-2.5">
+                        <div class="w-8 h-8 rounded-full bg-gray-200 mx-auto"></div>
+                        <div class="h-2 w-16 rounded bg-gray-200 mx-auto"></div>
+                        <div class="h-5 w-full rounded-lg mt-auto" style="background:#003049;opacity:.15;"></div>
+                    </div>
+                    <div class="px-3 py-2 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-700">Campanha — Institucional</p>
+                            <p class="text-[10px] text-gray-400">Sindicatos / associações</p>
+                        </div>
+                        @if ($template === 'campaign-institucional')
+                        <i data-lucide="check-circle" class="w-4 h-4" style="color:#003049;"></i>
+                        @endif
+                    </div>
+                </button>
+            @endif
         </div>
+
+        @if ($isPro)
+            <div class="flex flex-wrap gap-2 pt-1">
+                @foreach ([
+                    'campaign-retrato' => 'Retrato',
+                    'campaign-banner' => 'Banner',
+                    'campaign-minimalista' => 'Minimalista',
+                    'campaign-chapa' => 'Chapa',
+                    'campaign-moderno' => 'Moderno',
+                ] as $key => $label)
+                    <button type="button" wire:click="$set('template', '{{ $key }}')"
+                            class="px-3 py-1.5 rounded-full text-xs font-medium border transition-all
+                                   {{ $template === $key ? 'border-[#D62828] text-[#D62828] bg-red-50' : 'border-gray-200 text-gray-600 hover:border-gray-300' }}">
+                        Campanha — {{ $label }}
+                    </button>
+                @endforeach
+            </div>
+        @endif
+
         <p class="text-xs text-gray-400">O estilo é aplicado ao seu cartão público imediatamente.</p>
     </div>
 
